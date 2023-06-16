@@ -10,7 +10,6 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 const TOKEN = process.env.TOKEN as string;
 const CLIENT_ID = process.env.CLIENT_ID as string;
-const prefix = "";
 
 const commands = [
   {
@@ -28,11 +27,14 @@ const commands = [
   {
     name: "plugins",
     description: "Lista todos os plugins instalados no servidor",
+    options: [
+      {
+        name: "page",
+        description: "Insira a página que deseja visualizar",
+        type: 3,
+      },
+    ],
   },
-  {
-    name: "plugins2",
-    description: "Lista mais",
-  }
 ];
 
 const rest = new REST({ version: "10" }).setToken(TOKEN);
@@ -65,16 +67,10 @@ client.on("interactionCreate", async (interaction: any) => {
   if (interaction.commandName === "roll") {
     Roll(interaction);
   }
-  if(interaction.commandName === "plugins") {
-    new Plugins().listPlugins(interaction);
-  }
-  if(interaction.commandName === "plugins2") {
-    new Plugins().listPlugins2(interaction);
+  if (interaction.commandName === "plugins") {
+    const page = interaction.options.get("page")?.value || 1;
+    new Plugins().listPlugins(interaction, page);
   }
 });
 
-client.on("message", (message) => {
-  const args = message.content.slice(prefix.length).trim().split(" ");
-  const command = args.shift().toLowerCase();
-});
 client.login(TOKEN);
