@@ -1,4 +1,22 @@
-import plugins from "../repositories/pugins";
+import mongoose from "mongoose";
+
+const pluginsSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+});
+
+export const Ncsmplugins = mongoose.model("ncsmplugins", pluginsSchema);
+
+let plugins: Array<any> = [];
+
+async function getPlugins() {
+  plugins = await Ncsmplugins.find();
+
+  return;
+}
+
+getPlugins();
+
 export class Plugins {
   async listPlugins(interaction: any, page: number) {
     const MAX_CHARACTERS = 2000;
