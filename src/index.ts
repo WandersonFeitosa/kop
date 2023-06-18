@@ -6,6 +6,7 @@ import { Client, GatewayIntentBits } from "discord.js";
 import { Ana } from "./commands/Ana";
 import { Roll } from "./commands/Roll";
 import { Plugins } from "./commands/Plugins";
+import { Sorteio } from "./commands/Sorteio";
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -34,6 +35,30 @@ const commands = [
         name: "page",
         description: "Insira a página que deseja visualizar",
         type: 3,
+      },
+    ],
+  },
+  {
+    name: "sorteio",
+    description: "Realiza um sorteio",
+  },
+  {
+    name: "vincular",
+    description: "Vincula com uma pessoa do servidor",
+  },
+  {
+    name: "desvincular",
+    description: "Remove vinculos",
+  },
+  {
+    name: "pegarid",
+    description: "Pega a id de um jogador",
+    options: [
+      {
+        name: "player",
+        description: "Insira a página que deseja visualizar",
+        required: false,
+        type: 6,
       },
     ],
   },
@@ -83,5 +108,17 @@ client.on("interactionCreate", async (interaction: any) => {
   if (interaction.commandName === "plugins") {
     const page = interaction.options.get("page")?.value || 1;
     new Plugins().listPlugins(interaction, page);
+  }
+  if (interaction.commandName === "sorteio") {
+    new Sorteio().raffle(interaction);
+  }
+  if (interaction.commandName === "vincular") {
+    new Sorteio().bindUser(interaction);
+  }
+  if (interaction.commandName === "desvincular") {
+    new Sorteio().unbindUser(interaction);
+  }
+  if (interaction.commandName === "pegarid") {
+    new Sorteio().getID(interaction);
   }
 });
