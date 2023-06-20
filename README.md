@@ -1,20 +1,16 @@
 <h1>Kop</h1>
 
 <p  align="center">
-
 <img  src="http://img.shields.io/static/v1?label=&message=Typescript&color=blue&style=for-the-badge"/>
 <img  src="http://img.shields.io/static/v1?label=&message=Node&color=green&style=for-the-badge"/>
 <img  src="http://img.shields.io/static/v1?label=&message=MongoDB&color=green&style=for-the-badge"/>
-
 </p>
 
 ### Tópicos
 
-:small_blue_diamond: [Descrição do projeto](#andamento-do-projeto)
+:small_blue_diamond: [Descrição do projeto](#descrição-do-projeto)
 
-:small_blue_diamond: [Andamento do projeto](#descrição-do-projeto)
-
-:small_blue_diamond: [Configurando o projeto](#configurando-o-projeto)
+:small_blue_diamond: [Funções do bot](#funções-do-bot)
 
 :small_blue_diamond: [Tecnologias, plugins e libs](#tecnologias-plugins-e-libs-books)
 
