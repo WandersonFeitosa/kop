@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { getUsernameById } from "..";
 
 const bindsSchema = new mongoose.Schema({
   players: Array,
@@ -25,7 +26,7 @@ function buscarDiferente(array: any, user: string) {
 
   return diferente;
 }
-export class Sorteio {
+export class Familia {
   async bindUser(interaction: any) {
     const user = "<@" + interaction.user.id + ">";
     const player = interaction.options.get("player")?.value;
@@ -130,5 +131,30 @@ export class Sorteio {
       console.log(err);
       interaction.reply("Faz direito porra!");
     }
+  }
+  async listFamilies(interaction: any) {
+    const gods = await Gods.find();
+    let reply = "⊱⋅ ────── **FAMÍLIAS** ────── ⋅⊰" + "\n\n";
+    gods.forEach(async (god: any) => {
+      const players = god.players;
+      let playersNames: any = [];
+      if (players.length > 0) {
+        players.forEach(async (player: any) => {
+          const playerName = await getUsernameById(
+            player.replace("<@", "").replace(">", "")
+          );
+          playersNames.push("— " + playerName + "\n");
+        });
+      }
+      setTimeout(() => {
+        const playersString = playersNames.join("");
+
+        reply += `** \t\t\t\t${god.name}**\n- ${god.players.length} Players\n\n${playersString}\n`;
+      }, 499);
+    });
+
+    setTimeout(() => {
+      interaction.reply(reply);
+    }, 500);
   }
 }

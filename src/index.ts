@@ -6,7 +6,7 @@ import { Client, GatewayIntentBits } from "discord.js";
 import { Ana } from "./commands/Ana";
 import { Roll } from "./commands/Roll";
 import { Plugins } from "./commands/Plugins";
-import { Sorteio } from "./commands/Sorteio";
+import { Familia } from "./commands/Familia";
 import { commands } from "./commands/CommandList";
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -61,17 +61,25 @@ client.on("interactionCreate", async (interaction: any) => {
     new Plugins().listPlugins(interaction, page);
   }
   if (interaction.commandName === "pegarid") {
-    new Sorteio().getID(interaction);
+    new Familia().getID(interaction);
   }
   if (interaction.commandName === "familia") {
     if (interaction.options.getSubcommand() === "sortear") {
-      new Sorteio().raffle(interaction);
+      new Familia().raffle(interaction);
     }
     if (interaction.options.getSubcommand() === "vincular") {
-      new Sorteio().bindUser(interaction);
+      new Familia().bindUser(interaction);
     }
     if (interaction.options.getSubcommand() === "desvincular") {
-      new Sorteio().unbindUser(interaction);
+      new Familia().unbindUser(interaction);
+    }
+    if (interaction.options.getSubcommand() === "listar") {
+      new Familia().listFamilies(interaction);
     }
   }
 });
+
+export const getUsernameById = async (userId: any) => {
+  const user = await client.users.fetch(userId);
+  return user.username;
+};

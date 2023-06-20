@@ -29,7 +29,7 @@ O bot possui algumas funções já implementadas que são utilizadas e outras se
   - [ ] Listar detalhadamente cada plugins com um pequeno guia
 - Controle de família
   - [x] Sortear a família do jogador
-  - [ ] Listar as famílias do servidor
+  - [x] Listar as famílias do servidor
   - [x] Permitir moderadores alterarem família
 - Controle de missões de aquiles
   - [ ] Mostrar missões restantes dos aquiles
@@ -47,6 +47,8 @@ Os comandos atualmente ativos no servidores são
     /familia vincular - Gera um vínculo com um usuário para forçar a mesma família para ambos durante o sorteio
 
     /familia desvincular - Quebra um vínculo gerado
+
+    /familia listar - Lista as famílias do servidor e seus membros
 
     /plugins - Retorna a lista de plugins do servidor
 

@@ -61,6 +61,11 @@ export const commands = [
         description: "Desvincula com uma pessoa do servidor",
         type: 1,
       },
+      {
+        name: "listar",
+        description: "Lista todos os membros da familia",
+        type: 1,
+      },
     ],
   },
 ];
