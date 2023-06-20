@@ -149,7 +149,18 @@ export class Familia {
       setTimeout(() => {
         const playersString = playersNames.join("");
 
-        reply += `** \t\t\t\t${god.name}**\n- ${god.players.length} Players\n\n${playersString}\n`;
+        reply +=
+          "```" +
+          god.name +
+          "\n\n" +
+          "- " +
+          god.players.length +
+          " Players" +
+          "\n\n" +
+          playersString +
+          "\n" +
+          "```" +
+          "\n";
       }, 499);
     });
 
