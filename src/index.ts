@@ -64,15 +64,15 @@ client.on("interactionCreate", async (interaction: any) => {
     new Familia().getID(interaction);
   }
   if (interaction.commandName === "familia") {
-    if (interaction.options.getSubcommand() === "sortear") {
-      new Familia().raffle(interaction);
-    }
-    if (interaction.options.getSubcommand() === "vincular") {
-      new Familia().bindUser(interaction);
-    }
-    if (interaction.options.getSubcommand() === "desvincular") {
-      new Familia().unbindUser(interaction);
-    }
+    // if (interaction.options.getSubcommand() === "sortear") {
+    //   new Familia().raffle(interaction);
+    // }
+    // if (interaction.options.getSubcommand() === "vincular") {
+    //   new Familia().bindUser(interaction);
+    // }
+    // if (interaction.options.getSubcommand() === "desvincular") {
+    //   new Familia().unbindUser(interaction);
+    // }
     if (interaction.options.getSubcommand() === "listar") {
       new Familia().listFamilies(interaction);
     }
