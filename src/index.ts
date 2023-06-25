@@ -42,6 +42,8 @@ mongoose
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user?.tag}!`);
+  new Familia().updatePlayerNames();
+  new Familia().updateAquilesNames();
 });
 
 client.on("interactionCreate", async (interaction: any) => {
