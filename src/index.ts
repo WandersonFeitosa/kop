@@ -8,6 +8,12 @@ import { Roll } from "./commands/Roll";
 import { Plugins } from "./commands/Plugins";
 import { Familia } from "./commands/Familia";
 import { commands } from "./commands/CommandList";
+import express from "express";
+import routes from "./routes/routes";
+
+const app = express();
+app.use(express.json());
+app.use(routes);
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -85,3 +91,17 @@ export const getUsernameById = async (userId: any) => {
   const user = await client.users.fetch(userId);
   return user.username;
 };
+
+//enviar mensagem para canal específico
+export function sendPuzzleMsg() {
+  const channel: any = client.channels.cache.get("1119004778589069312");
+  if (channel) {
+    channel.send("Ana: 😎 | Vcs: 🤓");
+  }
+}
+
+const port = process.env.PORT || 3001;
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
