@@ -95,8 +95,12 @@ export const getUsernameById = async (userId: any) => {
 //enviar mensagem para canal específico
 export function sendPuzzleMsg() {
   const channel: any = client.channels.cache.get("1119004778589069312");
+
   if (channel) {
-    channel.send("Ana: 😎 | Vcs: 🤓");
+    //Send an image to the channel
+    channel.send({
+      files: ["./src/images/5968523.png"],
+    });
   }
 }
 
