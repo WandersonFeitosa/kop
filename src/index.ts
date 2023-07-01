@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(routes);
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 const TOKEN = process.env.TOKEN as string;
 const CLIENT_ID = process.env.CLIENT_ID as string;
@@ -93,14 +93,11 @@ export const getUsernameById = async (userId: any) => {
 };
 
 //enviar mensagem para canal específico
-export function sendPuzzleMsg() {
+export function sendPuzzleMsg(message: string) {
   const channel: any = client.channels.cache.get("1119004778589069312");
 
   if (channel) {
-    //Send an image to the channel
-    channel.send({
-      files: ["./src/images/5968523.png"],
-    });
+    channel.send(message + "\n\n @everyone");
   }
 }
 

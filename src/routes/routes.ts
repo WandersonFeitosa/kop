@@ -6,9 +6,9 @@ const routes = Router();
 
 routes.use(cors());
 
-routes.get("/puzzle", (req, res) => {
-  console.log("request");
-  sendPuzzleMsg();
+routes.post("/puzzle", (req, res) => {
+  const { message } = req.body;
+  sendPuzzleMsg(message);
   res.send("ok");
 });
 
