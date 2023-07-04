@@ -12,6 +12,10 @@ export const commands = [
     description: "ana",
   },
   {
+    name: "momento",
+    description: "Te lembra de algo aleatório com base em porra nenhuma",
+  },
+  {
     name: "plugins",
     description: "Lista todos os plugins instalados no servidor",
     options: [

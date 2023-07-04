@@ -10,6 +10,7 @@ import { Familia } from "./commands/Familia";
 import { commands } from "./commands/CommandList";
 import express from "express";
 import routes from "./routes/routes";
+import { Momento } from "./commands/Momento";
 
 const app = express();
 app.use(express.json());
@@ -48,8 +49,8 @@ mongoose
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user?.tag}!`);
-  new Familia().updatePlayerNames();
-  new Familia().updateAquilesNames();
+  // new Familia().updatePlayerNames();
+  // new Familia().updateAquilesNames();
 });
 
 client.on("interactionCreate", async (interaction: any) => {
@@ -75,6 +76,9 @@ client.on("interactionCreate", async (interaction: any) => {
     if (interaction.options.getSubcommand() === "listar") {
       new Familia().listFamilies(interaction);
     }
+  }
+  if (interaction.commandName === "momento") {
+    new Momento().momento(interaction);
   }
 });
 

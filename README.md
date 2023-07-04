@@ -35,6 +35,8 @@ O bot possui algumas funções já implementadas que são utilizadas e outras se
   - [ ] Mostrar missões restantes dos aquiles
   - [ ] Relatar conclusão de missão
   - [ ] Validar missão dos aquiles
+- Atualização do status dos enigmas do servidor
+  - [x] Atualizar status dos enigmas
 
 Os comandos atualmente ativos no servidores são
 
@@ -42,17 +44,13 @@ Os comandos atualmente ativos no servidores são
 
     /pegarid - Retorna o id do usuário marcado
 
-    /familia sortear - Sorteia a família do usuário
-
-    /familia vincular - Gera um vínculo com um usuário para forçar a mesma família para ambos durante o sorteio
-
-    /familia desvincular - Quebra um vínculo gerado
-
     /familia listar - Lista as famílias do servidor e seus membros
 
     /plugins - Retorna a lista de plugins do servidor
 
     /roll - Realiza um roll de 1 a 100
+
+    /momento - Retorna um momento aleatório que aconteceu no servidor
 
 ## Tecnologias, plugins e libs :books:
 
