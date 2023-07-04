@@ -38,29 +38,6 @@ export const commands = [
     name: "familia",
     description: "familia",
     options: [
-      // {
-      //   name: "sortear",
-      //   description: "Realiza um sorteio",
-      //   type: 1,
-      // },
-      // {
-      //   name: "vincular",
-      //   description: "Vincula com uma pessoa do servidor",
-      //   type: 1,
-      //   options: [
-      //     {
-      //       name: "player",
-      //       description: "Insira a player que deseja vincular",
-      //       required: true,
-      //       type: 6,
-      //     },
-      //   ],
-      // },
-      // {
-      //   name: "desvincular",
-      //   description: "Desvincula com uma pessoa do servidor",
-      //   type: 1,
-      // },
       {
         name: "listar",
         description: "Lista todos os membros da familia",

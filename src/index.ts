@@ -72,34 +72,11 @@ client.on("interactionCreate", async (interaction: any) => {
     new Familia().getID(interaction);
   }
   if (interaction.commandName === "familia") {
-    // if (interaction.options.getSubcommand() === "sortear") {
-    //   new Familia().raffle(interaction);
-    // }
-    // if (interaction.options.getSubcommand() === "vincular") {
-    //   new Familia().bindUser(interaction);
-    // }
-    // if (interaction.options.getSubcommand() === "desvincular") {
-    //   new Familia().unbindUser(interaction);
-    // }
     if (interaction.options.getSubcommand() === "listar") {
       new Familia().listFamilies(interaction);
     }
   }
 });
-
-export const getUsernameById = async (userId: any) => {
-  const user = await client.users.fetch(userId);
-  return user.username;
-};
-
-//enviar mensagem para canal específico
-export function sendPuzzleMsg(message: string) {
-  const channel: any = client.channels.cache.get("1119004778589069312");
-
-  if (channel) {
-    channel.send(message + "\n\n @everyone");
-  }
-}
 
 const port = process.env.PORT || 3001;
 

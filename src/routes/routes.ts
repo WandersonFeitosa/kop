@@ -1,6 +1,7 @@
 import { Router } from "express";
 import cors from "cors";
-import { sendPuzzleMsg } from "..";
+import { sendPuzzleMsg } from "../utils/sendPuzzleMsg";
+
 
 const routes = Router();
 
