@@ -25,6 +25,22 @@ export class Plugins {
     const startIndex = (page - 1) * perPage;
     const endIndex = startIndex + perPage;
 
+    const totalPages = Math.ceil(plugins.length / perPage);
+
+    if (isNaN(page)) {
+      interaction.reply(
+        `O valor inserido não é um número. Use o comando com o número da página que desja visualizar.`
+      );
+      return;
+    }
+
+    if (page > totalPages) {
+      interaction.reply(
+        `A página ${page} não existe. Use o comando com o número da página que desja visualizar.`
+      );
+      return;
+    }
+
     const remainingPlugins = plugins.slice(startIndex, endIndex);
 
     let pluginList = remainingPlugins.reduce((accumulator, plugin) => {
@@ -38,9 +54,7 @@ export class Plugins {
     }, "");
 
     if (endIndex < plugins.length) {
-      pluginList += `\n*Exibindo página ${page}/${Math.ceil(
-        plugins.length / perPage
-      )}. Use o comando com o número da página que desja visualizar.*`;
+      pluginList += `\n*Exibindo página ${page}/${totalPages}. Use o comando com o número da página que desja visualizar.*`;
     }
 
     interaction.reply(pluginList);
