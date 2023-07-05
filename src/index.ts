@@ -12,6 +12,7 @@ import express from "express";
 import routes from "./routes/routes";
 import { Momento } from "./commands/Momento";
 import { getRemainingTime } from "./utils/getRemainingTime";
+import { sendSkin } from "./utils/sendSkin";
 
 const app = express();
 app.use(express.json());
@@ -83,6 +84,9 @@ client.on("interactionCreate", async (interaction: any) => {
   }
   if (interaction.commandName === "tempo") {
     getRemainingTime(interaction);
+  }
+  if (interaction.commandName === "skins") {
+    sendSkin(interaction);
   }
 });
 

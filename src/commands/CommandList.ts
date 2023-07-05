@@ -20,6 +20,10 @@ export const commands = [
     description: "De diz o tempo restante até o fim do timer na página",
   },
   {
+    name: "skins",
+    description: "Envia o mod para as skins do Tlauncher",
+  },
+  {
     name: "plugins",
     description: "Lista todos os plugins instalados no servidor",
     options: [
