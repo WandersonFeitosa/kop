@@ -11,6 +11,7 @@ import { commands } from "./commands/CommandList";
 import express from "express";
 import routes from "./routes/routes";
 import { Momento } from "./commands/Momento";
+import { getRemainingTime } from "./utils/getRemainingTime";
 
 const app = express();
 app.use(express.json());
@@ -79,6 +80,9 @@ client.on("interactionCreate", async (interaction: any) => {
   }
   if (interaction.commandName === "momento") {
     new Momento().momento(interaction);
+  }
+  if (interaction.commandName === "tempo") {
+    getRemainingTime(interaction);
   }
 });
 

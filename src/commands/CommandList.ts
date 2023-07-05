@@ -16,6 +16,10 @@ export const commands = [
     description: "Te lembra de algo aleatório com base em porra nenhuma",
   },
   {
+    name: "tempo",
+    description: "De diz o tempo restante até o fim do timer na página",
+  },
+  {
     name: "plugins",
     description: "Lista todos os plugins instalados no servidor",
     options: [
