@@ -14,6 +14,25 @@ export const commands = [
   {
     name: "momento",
     description: "Te lembra de algo aleatório com base em porra nenhuma",
+    options: [
+      {
+        name: "nome",
+        description:
+          "Caso queira visualizar uma imagem específica insira o nome dela",
+        type: 3,
+      },
+    ],
+  },
+  {
+    name: "listar",
+    description: "Lista algo",
+    options: [
+      {
+        name: "momentos",
+        description: "Lista todos os momentos",
+        type: 1,
+      },
+    ],
   },
   {
     name: "tempo",

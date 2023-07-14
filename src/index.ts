@@ -86,6 +86,11 @@ client.on("interactionCreate", async (interaction: any) => {
   if (interaction.commandName === "skins") {
     sendSkin(interaction);
   }
+  if (interaction.commandName === "listar") {
+    if (interaction.options.getSubcommand() === "momentos") {
+      new Momento().listMomentos(interaction);
+    }
+  }
 });
 
 const port = process.env.PORT || 3001;
