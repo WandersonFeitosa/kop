@@ -13,6 +13,7 @@ import routes from "./routes/routes";
 import { Momento } from "./commands/Momento";
 import { getRemainingTime } from "./utils/getRemainingTime";
 import { sendSkin } from "./utils/sendSkin";
+import { Citacao } from "./commands/Citacao";
 
 const app = express();
 app.use(express.json());
@@ -90,6 +91,9 @@ client.on("interactionCreate", async (interaction: any) => {
     if (interaction.options.getSubcommand() === "momentos") {
       new Momento().listMomentos(interaction);
     }
+  }
+  if (interaction.commandName === "citacao") {
+    Citacao(interaction);
   }
 });
 

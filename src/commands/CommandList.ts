@@ -24,6 +24,24 @@ export const commands = [
     ],
   },
   {
+    name: "citacao",
+    description: "Crie uma citação",
+    options: [
+      {
+        name: "frase",
+        description:
+          "Digita aqui a frase da citação",
+        type: 3,
+      },
+      {
+        name: "autor",
+        description:
+          "Marque a pessoa que você deseja a foto da citação",
+        type: 3,
+      },
+    ],
+  },
+  {
     name: "listar",
     description: "Lista algo",
     options: [
