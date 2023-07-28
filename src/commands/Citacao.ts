@@ -40,14 +40,12 @@ export async function Citacao(interaction: any) {
   const sentence = interaction.options.getString("frase");
   const authorID = interaction.options.getString("autor");
   let authorName;
-  let userAvatar;
 
   // Verifica se a citação tem um autor
   if (!authorID) {
     authorName = "Anônimo";
   } else if (authorID.includes("<@")) {
     authorName = authorID.replace(/[<@!>]/g, "");
-
     authorName = await getUsernameById(authorName);
   } else {
     authorName = authorID;
@@ -74,6 +72,9 @@ export async function Citacao(interaction: any) {
   const background = await Canvas.loadImage("./src/images/citacao.jpg");
 
   ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ctx.font = "50px sans-serif";
   ctx.fillStyle = "#ffffff";
   ctx.textAlign = "center";
