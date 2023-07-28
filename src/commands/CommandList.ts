@@ -29,14 +29,18 @@ export const commands = [
     options: [
       {
         name: "frase",
-        description:
-          "Digita aqui a frase da citação",
+        description: "Digita aqui a frase da citação",
         type: 3,
       },
       {
         name: "autor",
+        description: "Marque a pessoa que você deseja a foto da citação",
+        type: 3,
+      },
+      {
+        name: "momento",
         description:
-          "Marque a pessoa que você deseja a foto da citação",
+          "Caso queira um momento de background específico insira o nome dele",
         type: 3,
       },
     ],

@@ -1,6 +1,7 @@
 import Canvas from "canvas";
 import { AttachmentBuilder } from "discord.js";
 import { getUsernameById } from "../utils/getUsernameById";
+import { getFileNamesInFolder } from "../utils/getFileNamesInFolder";
 
 // Preenche a citação quebrando linhas caso necessário
 function fillQuoteText(
@@ -39,7 +40,10 @@ function fillQuoteText(
 export async function Citacao(interaction: any) {
   const sentence = interaction.options.getString("frase");
   const authorID = interaction.options.getString("autor");
+  const requestedMomento = interaction.options.getString("momento");
+
   let authorName;
+  let background;
 
   // Verifica se a citação tem um autor
   if (!authorID) {
@@ -57,6 +61,23 @@ export async function Citacao(interaction: any) {
     return;
   }
 
+  const folderPath = "./src/images/momentos/";
+  const fileNames: any = await getFileNamesInFolder(folderPath);
+  if (requestedMomento) {
+    const requestedFileName = fileNames.find(
+      (fileName: any) => fileName.split(".")[0] === requestedMomento
+    );
+    if (!requestedFileName) {
+      interaction.reply("Momento não encontrado");
+      return;
+    }
+    background = await Canvas.loadImage(
+      `./src/images/momentos/${requestedFileName}`
+    );
+  } else {
+    background = await Canvas.loadImage("./src/images/citacao.jpg");
+  }
+
   // Gera a data atual
   const date = new Date();
   const formattedDate = `${date.getDate()}/${
@@ -67,12 +88,11 @@ export async function Citacao(interaction: any) {
   const quote = `"${sentence}"`;
   const author = `${authorName}, ${formattedDate}`;
 
-  const canvas = Canvas.createCanvas(640, 480);
+  const canvas = Canvas.createCanvas(840, 680);
   const ctx = canvas.getContext("2d");
-  const background = await Canvas.loadImage("./src/images/citacao.jpg");
 
   ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.font = "50px sans-serif";
@@ -83,7 +103,7 @@ export async function Citacao(interaction: any) {
 
   ctx.textAlign = "left";
   ctx.font = "40px sans-serif";
-  ctx.fillText(author, 50, 400);
+  ctx.fillText(author, 50, 600);
 
   ctx.strokeStyle = "#000000";
   ctx.lineWidth = 2;

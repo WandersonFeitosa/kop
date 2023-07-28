@@ -1,16 +1,4 @@
-import fs from "fs";
-
-async function getFileNamesInFolder(folderPath: any) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(folderPath, (error, files) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(files);
-      }
-    });
-  });
-}
+import { getFileNamesInFolder } from "../utils/getFileNamesInFolder";
 
 export class Momento {
   async momento(interaction: any) {
