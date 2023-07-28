@@ -16,17 +16,6 @@ const ncsmpFamilySchema = new mongoose.Schema({
 export const NcsmpFamily = mongoose.model("ncsmp-family", ncsmpFamilySchema);
 
 export class Familia {
-
-  async getID(interaction: any) {
-    try {
-      const player = interaction.options.get("player")?.value;
-      if (!player) return interaction.reply("Faz direito porra!");
-      interaction.reply("```" + player + "```");
-    } catch (err) {
-      console.log(err);
-      interaction.reply("Faz direito porra!");
-    }
-  }
   async listFamilies(interaction: any) {
     const families = await NcsmpFamily.find();
     let reply = "⊱⋅ ────── **FAMÍLIAS** ────── ⋅⊰" + "\n\n";

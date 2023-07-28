@@ -76,14 +76,36 @@ export const commands = [
     ],
   },
   {
-    name: "pegarid",
-    description: "Pega a id de um jogador",
+    name: "pegarinfo",
+    description: "Busque informações de um usuário",
     options: [
       {
-        name: "player",
-        description: "Insira a página que deseja visualizar",
+        name: "foto",
+        description: "Busca a foto de um usuário",
         required: false,
-        type: 6,
+        type: 1,
+        options: [
+          {
+            name: "usuario",
+            description: "Insira o nome do usuário",
+            type: 6,
+            required: true,
+          },
+        ],
+      },
+      {
+        name: "id",
+        description: "Busca a foto de um usuário",
+        required: false,
+        type: 1,
+        options: [
+          {
+            name: "usuario",
+            description: "Insira o nome do usuário",
+            type: 6,
+            required: true,
+          },
+        ],
       },
     ],
   },

@@ -14,6 +14,7 @@ import { Momento } from "./commands/Momento";
 import { getRemainingTime } from "./utils/getRemainingTime";
 import { sendSkin } from "./utils/sendSkin";
 import { Citacao } from "./commands/Citacao";
+import { getInfo } from "./commands/PegarInfo";
 
 const app = express();
 app.use(express.json());
@@ -70,9 +71,6 @@ client.on("interactionCreate", async (interaction: any) => {
     const page = interaction.options.get("page")?.value || 1;
     new Plugins().listPlugins(interaction, page);
   }
-  if (interaction.commandName === "pegarid") {
-    new Familia().getID(interaction);
-  }
   if (interaction.commandName === "familia") {
     if (interaction.options.getSubcommand() === "listar") {
       new Familia().listFamilies(interaction);
@@ -94,6 +92,14 @@ client.on("interactionCreate", async (interaction: any) => {
   }
   if (interaction.commandName === "citacao") {
     Citacao(interaction);
+  }
+  if (interaction.commandName === "pegarinfo") {
+    if (interaction.options.getSubcommand() === "foto") {
+      new getInfo().returnUserPhoto(interaction);
+    }
+    if (interaction.options.getSubcommand() === "id") {
+      new getInfo().returnUserID(interaction);
+    }
   }
 });
 
