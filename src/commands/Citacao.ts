@@ -2,33 +2,72 @@ import Canvas from "canvas";
 import { AttachmentBuilder } from "discord.js";
 import { getUsernameById } from "../utils/getUsernameById";
 
+// Preenche a citação quebrando linhas caso necessário
+function fillQuoteText(
+  ctx: any,
+  text: string,
+  maxWidth: number,
+  lineHeight: number
+) {
+  const words = text.split(" ");
+  let currentLine = "";
+  let lines = [];
+
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    const metrics = ctx.measureText(testLine);
+    const testWidth = metrics.width;
+
+    if (testWidth > maxWidth) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  }
+
+  lines.push(currentLine);
+
+  const yOffset = (ctx.canvas.height - lines.length * lineHeight) / 2;
+
+  for (let i = 0; i < lines.length; i++) {
+    const y = yOffset + i * lineHeight;
+    ctx.fillText(lines[i], ctx.canvas.width / 2, y);
+  }
+}
+
 export async function Citacao(interaction: any) {
-  const sentece = interaction.options.getString("frase");
-  if (!sentece) {
+  const sentence = interaction.options.getString("frase");
+  const authorID = interaction.options.getString("autor");
+  let authorName;
+  let userAvatar;
+
+  // Verifica se a citação tem um autor
+  if (!authorID) {
+    authorName = "Anônimo";
+  } else if (authorID.includes("<@")) {
+    authorName = authorID.replace(/[<@!>]/g, "");
+
+    authorName = await getUsernameById(authorName);
+  } else {
+    authorName = authorID;
+  }
+
+  // Verifica se a citação tem uma frase
+  if (!sentence) {
     interaction.reply("Você deve inserir uma frase para a citação");
     return;
   }
-  const authorID = interaction.options.getString("autor");
-  let authorName;
-  if (authorID) {
-    if (!authorID.includes("<@")) {
-      interaction.reply(
-        "Você deve marcar a pessoa que você deseja a foto da citação"
-      );
-      return;
-    }
-    const formatedID = authorID.replace(/[<@!>]/g, "");
-    authorName = await getUsernameById(formatedID);
-  } else {
-    authorName = "Anônimo";
-  }
+
+  // Gera a data atual
   const date = new Date();
-  const formatedDate = `${date.getDate()}/${
+  const formattedDate = `${date.getDate()}/${
     date.getMonth() + 1
   }/${date.getFullYear()}`;
 
-  const quote = `"${sentece}"`;
-  const author = `${authorName}, ${formatedDate}`;
+  // Monta a citação
+  const quote = `"${sentence}"`;
+  const author = `${authorName}, ${formattedDate}`;
 
   const canvas = Canvas.createCanvas(640, 480);
   const ctx = canvas.getContext("2d");
@@ -37,17 +76,11 @@ export async function Citacao(interaction: any) {
   ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
   ctx.font = "50px sans-serif";
   ctx.fillStyle = "#ffffff";
-  let text = quote;
-  let lines = [];
-  while (text.length > 17) {
-    lines.push(text.substring(0, 17));
-    text = text.substring(17);
-  }
-  lines.push(text);
-  for (const line of lines) {
-    ctx.fillText(line, 50, 70 + lines.indexOf(line) * 50);
-  }
+  ctx.textAlign = "center";
 
+  fillQuoteText(ctx, quote, canvas.width - 100, 60);
+
+  ctx.textAlign = "left";
   ctx.font = "40px sans-serif";
   ctx.fillText(author, 50, 400);
 
@@ -56,7 +89,6 @@ export async function Citacao(interaction: any) {
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
   const image = canvas.toBuffer();
-
   const attachmentBuilder = new AttachmentBuilder(image);
 
   await interaction.reply({ files: [attachmentBuilder] });
