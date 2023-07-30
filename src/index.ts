@@ -11,10 +11,9 @@ import { commands } from "./commands/CommandList";
 import express from "express";
 import routes from "./routes/routes";
 import { Momento } from "./commands/Momento";
-import { getRemainingTime } from "./utils/getRemainingTime";
-import { Citacao } from "./commands/Citacao";
 import { getInfo } from "./commands/PegarInfo";
 import { Skins } from "./commands/Skins";
+import { Quote } from "./commands/Citacao";
 
 const app = express();
 app.use(express.json());
@@ -79,9 +78,6 @@ client.on("interactionCreate", async (interaction: any) => {
   if (interaction.commandName === "momento") {
     new Momento().momento(interaction);
   }
-  if (interaction.commandName === "tempo") {
-    getRemainingTime(interaction);
-  }
   if (interaction.commandName === "skins") {
     new Skins().sendTutorial(interaction);
   }
@@ -90,8 +86,8 @@ client.on("interactionCreate", async (interaction: any) => {
       new Momento().listMomentos(interaction);
     }
   }
-  if (interaction.commandName === "citacao") {
-    Citacao(interaction);
+  if (interaction.commandName === "citacao") {    
+    new Quote().quote(interaction);
   }
   if (interaction.commandName === "pegarinfo") {
     if (interaction.options.getSubcommand() === "foto") {

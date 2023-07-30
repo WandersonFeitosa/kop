@@ -57,12 +57,8 @@ export const commands = [
     ],
   },
   {
-    name: "tempo",
-    description: "De diz o tempo restante até o fim do timer na página",
-  },
-  {
     name: "skins",
-    description: "Envia o mod para as skins do Tlauncher",
+    description: "Tutorial de como ver as skins no servidor",
   },
   {
     name: "plugins",

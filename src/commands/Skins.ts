@@ -1,10 +1,11 @@
 const tutorial = `
 **PLUGIN DE SKIN**
+
 Passo a Passo para colocarem as skins:
 
 Um detalhe muito importante, idenpendente do Launcher que você utilize, caso ele tenha um sistema de skins próprio, como o Tlauncher, desative ele. 
 
-Caso não saiba como, basta pedir ajuda no #•⚙┋problemas , que alguém vai te dar uma ajudinha.
+Caso não saiba como, basta pedir ajuda no <#1120530733702848583> , que alguém vai te dar uma ajudinha.
 
 ***Passo 1:***
 > Mande a skin baixada para si mesmo(a) no Discord ou para alguém.
