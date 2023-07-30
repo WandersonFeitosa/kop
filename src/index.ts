@@ -14,6 +14,7 @@ import { Momento } from "./commands/Momento";
 import { getInfo } from "./commands/PegarInfo";
 import { Skins } from "./commands/Skins";
 import { Quote } from "./commands/Citacao";
+import { Help } from "./commands/Ajuda";
 
 const app = express();
 app.use(express.json());
@@ -40,6 +41,7 @@ async function startServer() {
     console.error(error);
   }
 }
+
 mongoose
   .connect(dbUrl)
   .then(() => {
@@ -52,6 +54,10 @@ mongoose
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user?.tag}!`);
+  client.user?.setPresence({
+    activities: [{ name: "/comandos", type: undefined }],
+    status: "online",
+  });
 });
 
 client.on("interactionCreate", async (interaction: any) => {
@@ -86,7 +92,7 @@ client.on("interactionCreate", async (interaction: any) => {
       new Momento().listMomentos(interaction);
     }
   }
-  if (interaction.commandName === "citacao") {    
+  if (interaction.commandName === "citacao") {
     new Quote().quote(interaction);
   }
   if (interaction.commandName === "pegarinfo") {
@@ -96,6 +102,12 @@ client.on("interactionCreate", async (interaction: any) => {
     if (interaction.options.getSubcommand() === "id") {
       new getInfo().returnUserID(interaction);
     }
+  }
+  if (interaction.commandName === "comandos") {
+    new Help().help(interaction);
+  }
+  if (interaction.commandName === "meajudapeloamordedeus") {
+    new Help().vando(interaction);
   }
 });
 

@@ -1,7 +1,11 @@
 export const commands = [
   {
     name: "ping",
-    description: "Replies with Pong!",
+    description: "Pong",
+  },
+  {
+    name: "meajudapeloamordedeus",
+    description: "Chama o corno sofredor pra te ajudar",
   },
   {
     name: "roll",
@@ -115,5 +119,9 @@ export const commands = [
         type: 1,
       },
     ],
+  },
+  {
+    name: "comandos",
+    description: "Lista todos os comandos disponíveis",
   },
 ];
