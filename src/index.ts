@@ -12,9 +12,9 @@ import express from "express";
 import routes from "./routes/routes";
 import { Momento } from "./commands/Momento";
 import { getRemainingTime } from "./utils/getRemainingTime";
-import { sendSkin } from "./utils/sendSkin";
 import { Citacao } from "./commands/Citacao";
 import { getInfo } from "./commands/PegarInfo";
+import { Skins } from "./commands/Skins";
 
 const app = express();
 app.use(express.json());
@@ -83,7 +83,7 @@ client.on("interactionCreate", async (interaction: any) => {
     getRemainingTime(interaction);
   }
   if (interaction.commandName === "skins") {
-    sendSkin(interaction);
+    new Skins().sendTutorial(interaction);
   }
   if (interaction.commandName === "listar") {
     if (interaction.options.getSubcommand() === "momentos") {
