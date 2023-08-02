@@ -58,6 +58,11 @@ export const commands = [
         description: "Lista todos os momentos",
         type: 1,
       },
+      {
+        name: "tokens",
+        description: "Lista todos os seus tokens",
+        type: 1,
+      },
     ],
   },
   {
@@ -123,5 +128,10 @@ export const commands = [
   {
     name: "comandos",
     description: "Lista todos os comandos disponíveis",
+  },
+  {
+    name: "token",
+    description:
+      "Gera um token para postar artes na página de artes do servidor",
   },
 ];

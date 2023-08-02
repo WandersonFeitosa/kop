@@ -15,6 +15,7 @@ import { getInfo } from "./commands/PegarInfo";
 import { Skins } from "./commands/Skins";
 import { Quote } from "./commands/Citacao";
 import { Help } from "./commands/Ajuda";
+import { Token } from "./commands/Token";
 
 const app = express();
 app.use(express.json());
@@ -91,6 +92,9 @@ client.on("interactionCreate", async (interaction: any) => {
     if (interaction.options.getSubcommand() === "momentos") {
       new Momento().listMomentos(interaction);
     }
+    if (interaction.options.getSubcommand() === "tokens") {
+      new Token().listTokens(interaction);
+    }
   }
   if (interaction.commandName === "citacao") {
     new Quote().quote(interaction);
@@ -108,6 +112,9 @@ client.on("interactionCreate", async (interaction: any) => {
   }
   if (interaction.commandName === "meajudapeloamordedeus") {
     new Help().vando(interaction);
+  }
+  if (interaction.commandName === "token") {
+    new Token().generateToken(interaction);
   }
 });
 
