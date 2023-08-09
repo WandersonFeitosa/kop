@@ -33,8 +33,13 @@ export class Token {
 
     await newToken.save();
 
-    await interaction.user.send(`Seu novo token é: ${token}`);
-
+    try {
+      await interaction.user.send(`Seu novo token é: ${token}`);
+    } catch (e) {
+      return interaction.reply(
+        "Não foi possível enviar o token, verifique suas configurações de privacidade"
+      );
+    }
     interaction.reply("Token gerado com sucesso!");
   }
   async listTokens(interaction: any) {
