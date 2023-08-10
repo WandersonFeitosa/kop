@@ -6,6 +6,7 @@ export class CheckAllowedUser {
     const server_id = process.env.SERVER_ID as string;
     const player_role_id = "1108047769576407070";
     const aquiles_role_id = "1108047918335795392";
+    const admin_role_id = "1107701514417475625";
     const { username } = req.params;
 
     const guild = client.guilds.cache.get(server_id);
@@ -26,6 +27,10 @@ export class CheckAllowedUser {
       return res.status(401).json({ error: "Usuário não autorizado" });
     }
 
-    res.status(200).json({ message: "Usuário autorizado", userId });
+    const isUserAdmin = user?.roles.cache.has(admin_role_id);
+
+    res
+      .status(200)
+      .json({ message: "Usuário autorizado", userId, isUserAdmin });
   }
 }
