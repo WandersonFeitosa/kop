@@ -29,8 +29,17 @@ export class CheckAllowedUser {
 
     const isUserAdmin = user?.roles.cache.has(admin_role_id);
 
+    let playerType;
+
+    if (user?.roles.cache.has(player_role_id)) {
+      playerType = "player";
+    }
+    if (user?.roles.cache.has(aquiles_role_id)) {
+      playerType = "aquiles";
+    }
+
     res
       .status(200)
-      .json({ message: "Usuário autorizado", userId, isUserAdmin });
+      .json({ message: "Usuário autorizado", userId, isUserAdmin, playerType });
   }
 }
