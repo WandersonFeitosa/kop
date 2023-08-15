@@ -20,26 +20,22 @@ export class CheckAllowedUser {
 
     const user = guild?.members.cache.get(userId);
 
-    if (
-      !user?.roles.cache.has(player_role_id) &&
-      !user?.roles.cache.has(aquiles_role_id)
-    ) {
-      return res.status(401).json({ error: "Usuário não autorizado" });
-    }
+    const isUserAquiles = user?.roles.cache.has(aquiles_role_id);
+
+    const isUserPlayer = user?.roles.cache.has(player_role_id);
 
     const isUserAdmin = user?.roles.cache.has(admin_role_id);
 
-    let playerType;
-
-    if (user?.roles.cache.has(player_role_id)) {
-      playerType = "player";
-    }
-    if (user?.roles.cache.has(aquiles_role_id)) {
-      playerType = "aquiles";
+    if (!isUserAquiles && !isUserPlayer) {
+      return res.status(401).json({ error: "Usuário não autorizado" });
     }
 
-    res
-      .status(200)
-      .json({ message: "Usuário autorizado", userId, isUserAdmin, playerType });
+    res.status(200).json({
+      message: "Usuário autorizado",
+      userId,
+      isUserAdmin,
+      isUserAquiles,
+      isUserPlayer,
+    });
   }
 }
