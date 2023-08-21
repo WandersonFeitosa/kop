@@ -41,7 +41,7 @@ export class Supporter {
       const values = {
         coxinha: "2.50",
         salgado: "5.00",
-        bolo: "12.00",
+        bolo: "10.00",
       };
 
       const supportType: "coxinha" | "salgado" | "bolo" =
@@ -93,7 +93,7 @@ export class Supporter {
         content:
           "Relize o pagamento através do seguinte link: " +
           qrCodeUrl +
-          "\nApós realizar o pagamento, utiilze o comando /validar pagamento para validar o pagamento",
+          "\nApós realizar o pagamento, utiilze o comando /apoiador validar para validar o pagamento",
         ephemeral: true,
       });
       ////////////

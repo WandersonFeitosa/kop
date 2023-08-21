@@ -136,21 +136,21 @@ export const commands = [
   },
   {
     name: "apoiador",
-    description: "Pague uma coxinha pra Ana e se torne um apoiador",
+    description: "Pague um lanche para a Ana e se torne um apoiador do servidor",
     options: [
       {
         name: "coxinha",
-        description: "Apoie a ana com uma coxinha",
+        description: "Apoie a Ana com uma coxinha R$ 2,50",
         type: 1,
       },
       {
         name: "salgado",
-        description: "Apoie a ana com um salgado",
+        description: "Apoie a Ana com um salgado R$ 5,00",
         type: 1,
       },
       {
         name: "bolo",
-        description: "Apoie a ana com um bolo",
+        description: "Apoie a Ana com um bolo R$ 10,00",
         type: 1,
       },
       {
