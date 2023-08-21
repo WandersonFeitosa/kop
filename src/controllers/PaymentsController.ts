@@ -2,6 +2,13 @@ import axios from "axios";
 import { Aquiles } from "../models/Aquiles";
 import { Player } from "../models/Player";
 import { getUserType } from "../utils/userHasRole";
+import { giveMeberRole } from "../utils/giveMemberRole";
+import {
+  bolo_role_id,
+  coxinha_role_id,
+  salgado_role_id,
+} from "../utils/rolesId";
+import { sendServerMessage } from "../utils/sendServerStatus";
 
 const pixApiUrl = process.env.PIX_API_URL as string;
 const pixToken = process.env.PIX_TOKEN as string;
@@ -134,10 +141,38 @@ export class PaymentsController {
           lastQrCodeUrl: user?.vip?.lastQrCodeUrl,
         },
       });
-      return interaction.reply({
+      interaction.reply({
         content: "Pagamento validado com sucesso",
         ephemeral: true,
       });
+
+      let vipTypeIds;
+
+      const vipType = user?.vip?.vipType;
+      if (vipType === "salgado") {
+        vipTypeIds = salgado_role_id;
+      } else if (vipType === "coxinha") {
+        vipTypeIds = coxinha_role_id;
+      } else if (vipType === "bolo") {
+        vipTypeIds = bolo_role_id;
+      } else {
+        return sendServerMessage(
+          "1143011744487329883",
+          "Erro ao atribuir o cargo pagamento contate um administrador"
+        );
+      }
+
+      giveMeberRole({
+        userId: interaction.user.id,
+        roleId: vipTypeIds,
+      });
+
+      return sendServerMessage(
+        "1143011744487329883",
+        "O usuário <@" +
+          interaction.user.id +
+          "> acabou de se tornar um apoiador do servidor"
+      );
     }
 
     return interaction.reply({
