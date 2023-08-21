@@ -16,6 +16,8 @@ import { Skins } from "./commands/Skins";
 import { Quote } from "./commands/Citacao";
 import { Help } from "./commands/Ajuda";
 import { Token } from "./commands/Token";
+import { Supporter } from "./commands/Apoiador";
+import { PaymentsController } from "./controllers/PaymentsController";
 
 const app = express();
 app.use(express.json());
@@ -115,6 +117,13 @@ client.on("interactionCreate", async (interaction: any) => {
   }
   if (interaction.commandName === "token") {
     new Token().generateToken(interaction);
+  }
+  if (interaction.commandName === "apoiador") {
+    if (interaction.options.getSubcommand() === "validar") {
+      new PaymentsController().validatePayment(interaction);
+    } else {
+      new Supporter().generatePayment(interaction);
+    }
   }
 });
 

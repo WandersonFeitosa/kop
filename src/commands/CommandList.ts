@@ -134,4 +134,30 @@ export const commands = [
     description:
       "Gera um token para postar artes na página de artes do servidor",
   },
+  {
+    name: "apoiador",
+    description: "Pague uma coxinha pra Ana e se torne um apoiador",
+    options: [
+      {
+        name: "coxinha",
+        description: "Apoie a ana com uma coxinha",
+        type: 1,
+      },
+      {
+        name: "salgado",
+        description: "Apoie a ana com um salgado",
+        type: 1,
+      },
+      {
+        name: "bolo",
+        description: "Apoie a ana com um bolo",
+        type: 1,
+      },
+      {
+        name: "validar",
+        description: "Validar se seu pagamento foi efetuado",
+        type: 1,
+      },
+    ],
+  },
 ];

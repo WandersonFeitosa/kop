@@ -2,7 +2,8 @@ import { Router } from "express";
 import cors from "cors";
 import { sendPuzzleMsg } from "../utils/sendPuzzleMsg";
 import { sendServerMessage } from "../utils/sendServerStatus";
-import { CheckAllowedUser } from "../utils/checkAllowedUser";
+import { UserController } from "../controllers/UsersController";
+
 
 const routes = Router();
 
@@ -22,7 +23,7 @@ routes.post("/sendMessage", (req, res) => {
 
 routes.get(
   "/checkAllowedUser/:username",
-  new CheckAllowedUser().checkAllowedUser
+  new UserController().checkAllowedUser
 );
 
 export default routes;
