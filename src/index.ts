@@ -121,6 +121,8 @@ client.on("interactionCreate", async (interaction: any) => {
   if (interaction.commandName === "apoiador") {
     if (interaction.options.getSubcommand() === "validar") {
       new PaymentsController().validatePayment(interaction);
+    } else if (interaction.options.getSubcommand() === "limpar") {
+      new PaymentsController().clearPayment(interaction);
     } else {
       new Supporter().generatePayment(interaction);
     }

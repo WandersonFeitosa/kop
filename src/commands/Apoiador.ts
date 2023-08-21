@@ -30,7 +30,7 @@ export class Supporter {
           content:
             "Você já realizou um pedido, realize o pagamento no link: " +
             pendingPayment +
-            "\nOu limpe seus pagamentos pendentes com o comando /limpar pagamentos",
+            "\nOu limpe seus pagamentos pendentes com o comando /apoiador limpar",
           ephemeral: true,
         });
         return;

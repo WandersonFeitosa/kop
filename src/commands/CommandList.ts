@@ -136,7 +136,8 @@ export const commands = [
   },
   {
     name: "apoiador",
-    description: "Pague um lanche para a Ana e se torne um apoiador do servidor",
+    description:
+      "Pague um lanche para a Ana e se torne um apoiador do servidor",
     options: [
       {
         name: "coxinha",
@@ -156,6 +157,11 @@ export const commands = [
       {
         name: "validar",
         description: "Validar se seu pagamento foi efetuado",
+        type: 1,
+      },
+      {
+        name: "limpar",
+        description: "Limpar pagamentos pendentes",
         type: 1,
       },
     ],

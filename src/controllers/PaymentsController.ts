@@ -145,4 +145,33 @@ export class PaymentsController {
       ephemeral: true,
     });
   }
+  async clearPayment(interaction: any) {
+    const userType = getUserType(interaction.user.id);
+    let user;
+    if (userType == "aquiles") {
+      user = await Aquiles.findOne({ discordId: interaction.user.id });
+    } else if (userType == "player") {
+      user = await Player.findOne({ discordId: interaction.user.id });
+    }
+
+    if (!user || !user.vip || !user.vip.lastTxid)
+      return interaction.reply({
+        content: "Você não possui nenhum pagamento pendente",
+        ephemeral: true,
+      });
+
+    await user?.updateOne({
+      vip: {
+        vipType: "",
+        lastTxid: "",
+        lastTxidStatus: "",
+        lastQrCodeUrl: "",
+      },
+    });
+
+    return interaction.reply({
+      content: "Pagamento cancelado com sucesso",
+      ephemeral: true,
+    });
+  }
 }
