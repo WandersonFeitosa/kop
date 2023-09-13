@@ -135,6 +135,11 @@ export const commands = [
       "Gera um token para postar artes na página de artes do servidor",
   },
   {
+    name: "backup",
+    description:
+      "Inicia um backup do servidor",
+  },
+  {
     name: "apoiador",
     description:
       "Pague um lanche para a Ana e se torne um apoiador do servidor",

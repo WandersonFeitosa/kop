@@ -18,6 +18,7 @@ import { Help } from "./commands/Ajuda";
 import { Token } from "./commands/Token";
 import { Supporter } from "./commands/Apoiador";
 import { PaymentsController } from "./controllers/PaymentsController";
+import { Backup } from "./commands/Backup";
 
 const app = express();
 app.use(express.json());
@@ -126,6 +127,9 @@ client.on("interactionCreate", async (interaction: any) => {
     } else {
       new Supporter().generatePayment(interaction);
     }
+  }
+  if (interaction.commandName == "backup") {
+    new Backup().startBackup(interaction)
   }
 });
 
