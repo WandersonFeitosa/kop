@@ -140,6 +140,18 @@ export const commands = [
       "Inicia um backup do servidor",
   },
   {
+    name: "logs",
+    description: "Busca um log do servidor",
+    options: [
+      {
+        name: "nome",
+        description:
+          "Para receber um log insira o nome dele",
+        type: 3,
+      },
+    ],
+  },
+  {
     name: "apoiador",
     description:
       "Pague um lanche para a Ana e se torne um apoiador do servidor",

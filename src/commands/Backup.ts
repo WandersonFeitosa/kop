@@ -2,8 +2,8 @@ import axios from "axios";
 import { suport_role_id } from "../utils/rolesId";
 import { userHasRole } from "../utils/userHasRole";
 
-const backupUrl = process.env.SERVER_BACKUP_URL as string;
-const backupToken = process.env.SERVER_BACKUP_TOKEN as string;
+const serverManagerUrl = process.env.SERVER_MANAGER_URL as string;
+const serverManagerToken = process.env.SERVER_MANAGER_TOKEN as string;
 
 export class Backup {
     async startBackup(interaction: any) {
@@ -16,9 +16,9 @@ export class Backup {
 
         var config = {
             method: "GET",
-            url: backupUrl,
+            url: serverManagerUrl + "/startBackup",
             headers: {
-                authorization: "Basic " + backupToken,
+                authorization: "Basic " + serverManagerToken,
             }
         };
 

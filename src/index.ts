@@ -19,6 +19,7 @@ import { Token } from "./commands/Token";
 import { Supporter } from "./commands/Apoiador";
 import { PaymentsController } from "./controllers/PaymentsController";
 import { Backup } from "./commands/Backup";
+import { Logs } from "./commands/Logs";
 
 const app = express();
 app.use(express.json());
@@ -130,6 +131,14 @@ client.on("interactionCreate", async (interaction: any) => {
   }
   if (interaction.commandName == "backup") {
     new Backup().startBackup(interaction)
+  }
+  if (interaction.commandName == "logs") {
+    const fileName = interaction.options.getString("nome");
+    if (fileName) {
+      new Logs().getLog(interaction)
+    } else {
+      new Logs().getLogsNames(interaction)
+    }
   }
 });
 
