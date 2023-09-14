@@ -4,6 +4,7 @@ const serverManagerToken = process.env.SERVER_MANAGER_TOKEN as string;
 import * as fs from 'fs';
 import { userHasRole } from "../utils/userHasRole";
 import { suport_role_id } from "../utils/rolesId";
+import { client } from "..";
 
 
 export class Logs {
@@ -59,6 +60,12 @@ export class Logs {
 
     }
     async getLogsNames(interaction: any) {
+        const allowedUser = userHasRole({ userId: interaction.user.id, roleId: suport_role_id });
+
+        if (!allowedUser) {
+            return interaction.reply("Você não tem permissão para executar esse comando");
+        }
+
         var config = {
             method: "GET",
             url: serverManagerUrl + "/getLogsNames/",
@@ -83,16 +90,23 @@ export class Logs {
         }
 
         const fileNames = response.data.fileNames;
+        const channelId = interaction.channel.id;
+        const channel: any = client.channels.cache.get(channelId);
 
+        const MAX_CHARACTERS = 1500;
         let table = "Logs\n\n";
         for (let i = 0; i < fileNames.length; i += 4) {
             const row = fileNames
                 .slice(i, i + 4)
                 .map((item: any, index: any) => `${index === 0 ? "" : "|"} ${item}`)
                 .join(" ");
+            if (table.length > MAX_CHARACTERS) {
+                channel.send(`\`\`\`\n${table}\n\`\`\``);
+                table = "";
+            }
             table += `${row}\n`;
         }
-        interaction.reply(`\`\`\`\n${table}\n\`\`\``);
-
+        interaction.reply("Logs");
+        return channel.send(`\`\`\`\n${table}\n\`\`\``);
     }
 }
