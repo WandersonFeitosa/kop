@@ -30,33 +30,40 @@ export class Logs {
                 return { err, sucess: false };
             }
         }
+        try {
+            const response = await requestFile();
 
-        const response = await requestFile();
-
-        if (response.err) {
-            const error: any = response.err;
-            return interaction.reply(error.response.data.message);
-        }
-
-        const file = response.data
-
-        const fileName = requestedFile;
-        await fs.promises.writeFile(`./src/uploads/${fileName}`, file);
-
-        await interaction.reply({
-            files: [{
-                attachment: `./src/uploads/${fileName}`,
-                name: fileName
-            }]
-        });
-
-
-        fs.unlink(`./src/uploads/${fileName}`, (err) => {
-            if (err) {
-                console.error(err)
-                return
+            if (response.err) {
+                const error: any = response.err;
+                if (error.response.data.message) {
+                    return interaction.reply(error.response.data.message);
+                }
+                return interaction.reply("Erro ao buscar o arquivo, verifique se o nome do arquivo está correto e tente novamente");
             }
-        })
+
+            const file = response.data
+
+            const fileName = requestedFile;
+            await fs.promises.writeFile(`./src/uploads/${fileName}`, file);
+
+            await interaction.reply({
+                files: [{
+                    attachment: `./src/uploads/${fileName}`,
+                    name: fileName
+                }]
+            });
+
+
+            fs.unlink(`./src/uploads/${fileName}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+            })
+        }
+        catch (err) {
+            interaction.reply("Erro ao buscar o arquivo, tente novamente mais tarde");
+        }
 
     }
     async getLogsNames(interaction: any) {
@@ -81,32 +88,37 @@ export class Logs {
                 return { err, sucess: false };
             }
         }
+        try {
+            const response = await requestFileNames();
 
-        const response = await requestFileNames();
-
-        if (response.err) {
-            const error: any = response.err;
-            return interaction.reply(error.response.data.message);
-        }
-
-        const fileNames = response.data.fileNames;
-        const channelId = interaction.channel.id;
-        const channel: any = client.channels.cache.get(channelId);
-
-        const MAX_CHARACTERS = 1500;
-        let table = "Logs\n\n";
-        for (let i = 0; i < fileNames.length; i += 4) {
-            const row = fileNames
-                .slice(i, i + 4)
-                .map((item: any, index: any) => `${index === 0 ? "" : "|"} ${item}`)
-                .join(" ");
-            if (table.length > MAX_CHARACTERS) {
-                channel.send(`\`\`\`\n${table}\n\`\`\``);
-                table = "";
+            if (response.err) {
+                const error: any = response.err;
+                return interaction.reply(error.response.data.message);
             }
-            table += `${row}\n`;
+
+            const fileNames = response.data.fileNames;
+            const channelId = interaction.channel.id;
+            const channel: any = client.channels.cache.get(channelId);
+
+            const MAX_CHARACTERS = 1500;
+            let table = "Logs\n\n";
+            for (let i = 0; i < fileNames.length; i += 4) {
+                const row = fileNames
+                    .slice(i, i + 4)
+                    .map((item: any, index: any) => `${index === 0 ? "" : "|"} ${item}`)
+                    .join(" ");
+                if (table.length > MAX_CHARACTERS) {
+                    channel.send(`\`\`\`\n${table}\n\`\`\``);
+                    table = "";
+                }
+                table += `${row}\n`;
+            }
+            interaction.reply("Logs");
+            return channel.send(`\`\`\`\n${table}\n\`\`\``);
         }
-        interaction.reply("Logs");
-        return channel.send(`\`\`\`\n${table}\n\`\`\``);
+        catch (err) {
+            interaction.reply("Erro ao buscar o arquivo, tente novamente mais tarde");
+        }
     }
+
 }
