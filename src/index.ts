@@ -20,6 +20,8 @@ import { Supporter } from "./commands/Apoiador";
 import { PaymentsController } from "./controllers/PaymentsController";
 import { Backup } from "./commands/Backup";
 import { Logs } from "./commands/Logs";
+import schedule from "node-schedule";
+import { requestBackupStart } from "./utils/requestBackupStart";
 
 const app = express();
 app.use(express.json());
@@ -130,14 +132,14 @@ client.on("interactionCreate", async (interaction: any) => {
     }
   }
   if (interaction.commandName == "backup") {
-    new Backup().startBackup(interaction)
+    new Backup().startBackup(interaction);
   }
   if (interaction.commandName == "logs") {
     const fileName = interaction.options.getString("nome");
     if (fileName) {
-      new Logs().getLog(interaction)
+      new Logs().getLog(interaction);
     } else {
-      new Logs().getLogsNames(interaction)
+      new Logs().getLogsNames(interaction);
     }
   }
 });
@@ -146,4 +148,12 @@ const port = process.env.PORT || 3001;
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
+});
+
+schedule.scheduleJob("0 7 * * *", async () => {
+  try {
+    await requestBackupStart();
+  } catch (err) {
+    console.log(err);
+  }
 });
