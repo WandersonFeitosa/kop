@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const AquilesSchema = new mongoose.Schema({
   username: String,
@@ -25,4 +25,4 @@ const AquilesSchema = new mongoose.Schema({
   ],
 });
 
-export const Aquiles = mongoose.model("Aquiles", AquilesSchema);
+export const Aquiles = mongoose.model('Aquiles', AquilesSchema);

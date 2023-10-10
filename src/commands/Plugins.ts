@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const pluginsSchema = new mongoose.Schema({
   name: String,
   description: String,
 });
 
-export const Ncsmplugins = mongoose.model("ncsmplugins", pluginsSchema);
+export const Ncsmplugins = mongoose.model('ncsmplugins', pluginsSchema);
 
 let plugins: Array<any> = [];
 
@@ -29,14 +29,14 @@ export class Plugins {
 
     if (isNaN(page)) {
       interaction.reply(
-        `O valor inserido não é um número. Use o comando com o número da página que desja visualizar.`
+        `O valor inserido não é um número. Use o comando com o número da página que desja visualizar.`,
       );
       return;
     }
 
     if (page > totalPages) {
       interaction.reply(
-        `A página ${page} não existe. Use o comando com o número da página que desja visualizar.`
+        `A página ${page} não existe. Use o comando com o número da página que desja visualizar.`,
       );
       return;
     }
@@ -51,7 +51,7 @@ export class Plugins {
         return accumulator;
       }
       return accumulator;
-    }, "");
+    }, '');
 
     if (endIndex < plugins.length) {
       pluginList += `\n*Exibindo página ${page}/${totalPages}. Use o comando com o número da página que desja visualizar.*`;
