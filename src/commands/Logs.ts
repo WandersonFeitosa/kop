@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { userHasRole } from '../utils/userHasRole';
 import { suport_role_id } from '../utils/rolesId';
 import { client } from '..';
+import http from 'http';
 
 export class Logs {
   async getLog(interaction: any) {
@@ -19,53 +20,46 @@ export class Logs {
       );
     }
     const requestedFile = interaction.options.getString('nome');
-    var config = {
-      method: 'GET',
+    const config = {
       url: serverManagerUrl + '/getLog/' + requestedFile,
+    };
+    const options = {
       headers: {
-        authorization: 'Basic ' + serverManagerToken,
+        Authorization: `Bearer ${serverManagerToken}`,
       },
     };
-    async function requestFile() {
-      try {
-        const response = await axios(config);
-        return { data: response.data, sucess: true };
-      } catch (err) {
-        return { err, sucess: false };
-      }
-    }
+
     try {
-      const response = await requestFile();
+      http.get(config.url, options, (res) => {
+        const buffers: Buffer[] = [];
+        res.on('data', async (chunk) => {
+          buffers.push(chunk);
+        });
+        res.on('end', async () => {
+          const completeBuffer = Buffer.concat(buffers);
 
-      if (response.err) {
-        const error: any = response.err;
-        if (error.response.data.message) {
-          return interaction.reply(error.response.data.message);
-        }
-        return interaction.reply(
-          'Erro ao buscar o arquivo, verifique se o nome do arquivo está correto e tente novamente',
-        );
-      }
+          await fs.promises.writeFile(
+            `./src/uploads/${requestedFile}`,
+            completeBuffer,
+          );
 
-      const file = response.data;
+          await interaction.reply({
+            files: [
+              {
+                attachment: `./src/uploads/${requestedFile}`,
+                name: requestedFile,
+              },
+            ],
+          });
 
-      const fileName = requestedFile;
-      await fs.promises.writeFile(`./src/uploads/${fileName}`, file);
-
-      await interaction.reply({
-        files: [
-          {
-            attachment: `./src/uploads/${fileName}`,
-            name: fileName,
-          },
-        ],
-      });
-
-      fs.unlink(`./src/uploads/${fileName}`, (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
+          fs.unlink(`./src/uploads/${requestedFile}`, (err) => {
+            if (err) {
+              console.error(err);
+              new Error('Erro ao deletar o arquivo');
+              return;
+            }
+          });
+        });
       });
     } catch (err) {
       interaction.reply('Erro ao buscar o arquivo, tente novamente mais tarde');
