@@ -1,124 +1,126 @@
-import axios from "axios";
+import axios from 'axios';
 const serverManagerUrl = process.env.SERVER_MANAGER_URL as string;
 const serverManagerToken = process.env.SERVER_MANAGER_TOKEN as string;
 import * as fs from 'fs';
-import { userHasRole } from "../utils/userHasRole";
-import { suport_role_id } from "../utils/rolesId";
-import { client } from "..";
-
+import { userHasRole } from '../utils/userHasRole';
+import { suport_role_id } from '../utils/rolesId';
+import { client } from '..';
+import http from 'http';
 
 export class Logs {
-    async getLog(interaction: any) {
-        const allowedUser = userHasRole({ userId: interaction.user.id, roleId: suport_role_id });
+  async getLog(interaction: any) {
+    const allowedUser = userHasRole({
+      userId: interaction.user.id,
+      roleId: suport_role_id,
+    });
 
-        if (!allowedUser) {
-            return interaction.reply("Você não tem permissão para executar esse comando");
-        }
-        const requestedFile = interaction.options.getString("nome");
-        var config = {
-            method: "GET",
-            url: serverManagerUrl + "/getLog/" + requestedFile,
-            headers: {
-                authorization: "Basic " + serverManagerToken,
-            }
-        };
-        async function requestFile() {
-            try {
-                const response = await axios(config);
-                return { data: response.data, sucess: true };
-            } catch (err) {
-                return { err, sucess: false };
-            }
-        }
-        try {
-            const response = await requestFile();
-
-            if (response.err) {
-                const error: any = response.err;
-                if (error.response.data.message) {
-                    return interaction.reply(error.response.data.message);
-                }
-                return interaction.reply("Erro ao buscar o arquivo, verifique se o nome do arquivo está correto e tente novamente");
-            }
-
-            const file = response.data
-
-            const fileName = requestedFile;
-            await fs.promises.writeFile(`./src/uploads/${fileName}`, file);
-
-            await interaction.reply({
-                files: [{
-                    attachment: `./src/uploads/${fileName}`,
-                    name: fileName
-                }]
-            });
-
-
-            fs.unlink(`./src/uploads/${fileName}`, (err) => {
-                if (err) {
-                    console.error(err)
-                    return
-                }
-            })
-        }
-        catch (err) {
-            interaction.reply("Erro ao buscar o arquivo, tente novamente mais tarde");
-        }
-
+    if (!allowedUser) {
+      return interaction.reply(
+        'Você não tem permissão para executar esse comando',
+      );
     }
-    async getLogsNames(interaction: any) {
-        const allowedUser = userHasRole({ userId: interaction.user.id, roleId: suport_role_id });
+    const requestedFile = interaction.options.getString('nome');
+    const config = {
+      url: serverManagerUrl + '/getLog/' + requestedFile,
+    };
+    const options = {
+      headers: {
+        Authorization: `Bearer ${serverManagerToken}`,
+      },
+    };
 
-        if (!allowedUser) {
-            return interaction.reply("Você não tem permissão para executar esse comando");
-        }
+    try {
+      http.get(config.url, options, (res) => {
+        const buffers: Buffer[] = [];
+        res.on('data', async (chunk) => {
+          buffers.push(chunk);
+        });
+        res.on('end', async () => {
+          const completeBuffer = Buffer.concat(buffers);
 
-        var config = {
-            method: "GET",
-            url: serverManagerUrl + "/getLogsNames/",
-            headers: {
-                authorization: "Basic " + serverManagerToken,
+          await fs.promises.writeFile(
+            `./src/uploads/${requestedFile}`,
+            completeBuffer,
+          );
+
+          await interaction.reply({
+            files: [
+              {
+                attachment: `./src/uploads/${requestedFile}`,
+                name: requestedFile,
+              },
+            ],
+          });
+
+          fs.unlink(`./src/uploads/${requestedFile}`, (err) => {
+            if (err) {
+              console.error(err);
+              new Error('Erro ao deletar o arquivo');
+              return;
             }
-        };
-        async function requestFileNames() {
-            try {
-                const response = await axios(config);
-                return { data: response.data, sucess: true };
-            } catch (err) {
-                return { err, sucess: false };
-            }
-        }
-        try {
-            const response = await requestFileNames();
+          });
+        });
+      });
+    } catch (err) {
+      interaction.reply('Erro ao buscar o arquivo, tente novamente mais tarde');
+    }
+  }
+  async getLogsNames(interaction: any) {
+    const allowedUser = userHasRole({
+      userId: interaction.user.id,
+      roleId: suport_role_id,
+    });
 
-            if (response.err) {
-                const error: any = response.err;
-                return interaction.reply(error.response.data.message);
-            }
-
-            const fileNames = response.data.fileNames;
-            const channelId = interaction.channel.id;
-            const channel: any = client.channels.cache.get(channelId);
-
-            const MAX_CHARACTERS = 1500;
-            let table = "Logs\n\n";
-            for (let i = 0; i < fileNames.length; i += 4) {
-                const row = fileNames
-                    .slice(i, i + 4)
-                    .map((item: any, index: any) => `${index === 0 ? "" : "|"} ${item}`)
-                    .join(" ");
-                if (table.length > MAX_CHARACTERS) {
-                    channel.send(`\`\`\`\n${table}\n\`\`\``);
-                    table = "";
-                }
-                table += `${row}\n`;
-            }
-            interaction.reply("Logs");
-            return channel.send(`\`\`\`\n${table}\n\`\`\``);
-        }
-        catch (err) {
-            interaction.reply("Erro ao buscar o arquivo, tente novamente mais tarde");
-        }
+    if (!allowedUser) {
+      return interaction.reply(
+        'Você não tem permissão para executar esse comando',
+      );
     }
 
+    var config = {
+      method: 'GET',
+      url: serverManagerUrl + '/getLogsNames/',
+      headers: {
+        authorization: 'Basic ' + serverManagerToken,
+      },
+    };
+    async function requestFileNames() {
+      try {
+        const response = await axios(config);
+        return { data: response.data, sucess: true };
+      } catch (err) {
+        return { err, sucess: false };
+      }
+    }
+    try {
+      const response = await requestFileNames();
+
+      if (response.err) {
+        const error: any = response.err;
+        return interaction.reply(error.response.data.message);
+      }
+
+      const fileNames = response.data.fileNames;
+      const channelId = interaction.channel.id;
+      const channel: any = client.channels.cache.get(channelId);
+
+      const MAX_CHARACTERS = 1500;
+      let table = 'Logs\n\n';
+      for (let i = 0; i < fileNames.length; i += 4) {
+        const row = fileNames
+          .slice(i, i + 4)
+          .map((item: any, index: any) => `${index === 0 ? '' : '|'} ${item}`)
+          .join(' ');
+        if (table.length > MAX_CHARACTERS) {
+          channel.send(`\`\`\`\n${table}\n\`\`\``);
+          table = '';
+        }
+        table += `${row}\n`;
+      }
+      interaction.reply('Logs');
+      return channel.send(`\`\`\`\n${table}\n\`\`\``);
+    } catch (err) {
+      interaction.reply('Erro ao buscar o arquivo, tente novamente mais tarde');
+    }
+  }
 }

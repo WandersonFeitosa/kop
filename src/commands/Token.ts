@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const ncsmpArtsTokensSchema = new mongoose.Schema({
   token: String,
@@ -7,7 +7,7 @@ const ncsmpArtsTokensSchema = new mongoose.Schema({
   image: String,
 });
 
-const ArtsTokens = mongoose.model("ncsmp-arts-tokens", ncsmpArtsTokensSchema);
+const ArtsTokens = mongoose.model('ncsmp-arts-tokens', ncsmpArtsTokensSchema);
 export class Token {
   async generateToken(interaction: any) {
     const token =
@@ -21,7 +21,7 @@ export class Token {
 
     if (userToken) {
       return interaction.reply(
-        "Você já possui um token não utilizado, verifique suas mensagens diretas"
+        'Você já possui um token não utilizado, verifique suas mensagens diretas',
       );
     }
 
@@ -37,31 +37,31 @@ export class Token {
       await interaction.user.send(`Seu novo token é: ${token}`);
     } catch (e) {
       return interaction.reply(
-        "Não foi possível enviar o token, verifique suas configurações de privacidade"
+        'Não foi possível enviar o token, verifique suas configurações de privacidade',
       );
     }
-    interaction.reply("Token gerado com sucesso!");
+    interaction.reply('Token gerado com sucesso!');
   }
   async listTokens(interaction: any) {
     const tokens = await ArtsTokens.find({ user: interaction.user.id });
 
-    let message = "Seus tokens: \n";
+    let message = 'Seus tokens: \n';
 
     tokens.forEach((token) => {
-      const used = token.used ? "Sim" : "Não";
-      const image = token.image ? token.image : "Não utilizado";
+      const used = token.used ? 'Sim' : 'Não';
+      const image = token.image ? token.image : 'Não utilizado';
       const tokenMsg =
-        "```Token: " +
+        '```Token: ' +
         token.token +
-        "\n\nUsado: " +
+        '\n\nUsado: ' +
         used +
-        "\n\nImagem: " +
+        '\n\nImagem: ' +
         image +
-        "```\n";
+        '```\n';
       message += tokenMsg;
     });
 
     interaction.user.send(message);
-    interaction.reply("Tokens enviados");
+    interaction.reply('Tokens enviados');
   }
 }

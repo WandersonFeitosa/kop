@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const PlayerSchema = new mongoose.Schema({
   discordId: String,
@@ -16,4 +16,4 @@ const PlayerSchema = new mongoose.Schema({
   familyInvites: [String],
 });
 
-export const Player = mongoose.model("Player", PlayerSchema);
+export const Player = mongoose.model('Player', PlayerSchema);

@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { getUsernameById } from "../utils/getUsernameById";
+import mongoose from 'mongoose';
+import { getUsernameById } from '../utils/getUsernameById';
 
 const bindsSchema = new mongoose.Schema({
   players: Array,
@@ -13,35 +13,35 @@ const ncsmpFamilySchema = new mongoose.Schema({
   aquilesNames: Array,
 });
 
-export const NcsmpFamily = mongoose.model("ncsmp-family", ncsmpFamilySchema);
+export const NcsmpFamily = mongoose.model('ncsmp-family', ncsmpFamilySchema);
 
 export class Familia {
   async listFamilies(interaction: any) {
     const families = await NcsmpFamily.find();
-    let reply = "⊱⋅ ────── **FAMÍLIAS** ────── ⋅⊰" + "\n\n";
+    let reply = '⊱⋅ ────── **FAMÍLIAS** ────── ⋅⊰' + '\n\n';
     families.forEach(async (family: any) => {
       if (family.playersNames.length > 1) {
-        family.playersNames = family.playersNames.join("\n");
+        family.playersNames = family.playersNames.join('\n');
       }
       if (family.aquilesNames.length > 1) {
-        family.aquilesNames = family.aquilesNames.join(", ");
+        family.aquilesNames = family.aquilesNames.join(', ');
       }
 
       setTimeout(() => {
         reply +=
-          "```" +
+          '```' +
           family.name +
-          "\n\n" +
-          "- " +
+          '\n\n' +
+          '- ' +
           family.players.length +
-          " Players" +
-          "\n\n" +
+          ' Players' +
+          '\n\n' +
           family.playersNames +
-          "\n\n" +
-          "Aquiles: " +
+          '\n\n' +
+          'Aquiles: ' +
           family.aquilesNames +
-          "```" +
-          "\n";
+          '```' +
+          '\n';
       }, 499);
     });
 
@@ -59,7 +59,7 @@ export class Familia {
         players.forEach(async (player: any) => {
           const playerName = await getUsernameById(player);
           playersNames.push(playerName);
-          console.log(playerName + " atualizado");
+          console.log(playerName + ' atualizado');
         });
       }
       setTimeout(() => {
@@ -77,7 +77,7 @@ export class Familia {
         aquiles.forEach(async (aquiles: any) => {
           const aquilesName = await getUsernameById(aquiles);
           aquilesNames.push(aquilesName);
-          console.log(aquilesName + " atualizado");
+          console.log(aquilesName + ' atualizado');
         });
       }
       setTimeout(() => {

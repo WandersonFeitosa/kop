@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
-import { client } from "..";
+import { Request, Response } from 'express';
+import { client } from '..';
 import {
   admin_role_id,
   aquiles_role_id,
   player_role_id,
   server_id,
-} from "../utils/rolesId";
-import { Aquiles } from "../models/Aquiles";
-import { Player } from "../models/Player";
+} from '../utils/rolesId';
+import { Aquiles } from '../models/Aquiles';
+import { Player } from '../models/Player';
 
 interface RegisterUserInDbProps {
   username: string;
@@ -18,18 +18,16 @@ interface RegisterUserInDbProps {
 }
 
 async function userExist(userType: string, discordId: string) {
-  if (userType === "aquiles") {
+  if (userType === 'aquiles') {
     const aquiles = await Aquiles.findOne({ discordId });
     return aquiles;
   }
-  if (userType === "player") {
+  if (userType === 'player') {
     const player = await Player.findOne({ discordId });
     return player;
   }
   return null;
 }
-
-
 
 export class UserController {
   async checkAllowedUser(req: Request, res: Response) {
@@ -42,7 +40,7 @@ export class UserController {
     const userId = userQuery?.first()?.id;
 
     if (!userId)
-      return res.status(404).json({ error: "Usuário não encontrado" });
+      return res.status(404).json({ error: 'Usuário não encontrado' });
 
     const user = guild?.members.cache.get(userId);
 
@@ -53,11 +51,11 @@ export class UserController {
     const isUserAdmin = user?.roles.cache.has(admin_role_id);
 
     if (!isUserAquiles && !isUserPlayer) {
-      return res.status(401).json({ error: "Usuário não autorizado" });
+      return res.status(401).json({ error: 'Usuário não autorizado' });
     }
 
     res.status(200).json({
-      message: "Usuário autorizado",
+      message: 'Usuário autorizado',
       userId,
       isUserAdmin,
       isUserAquiles,
@@ -78,7 +76,7 @@ export class UserController {
         return existingUser;
       }
 
-      if (userType === "aquiles") {
+      if (userType === 'aquiles') {
         const aquiles = new Aquiles({
           username,
           avatar,
@@ -86,9 +84,9 @@ export class UserController {
           discordId,
           vip: {
             status: false,
-            lastTxid: "",
-            lastQrCodeUrl: "",
-            lastTxidStatus: "",
+            lastTxid: '',
+            lastQrCodeUrl: '',
+            lastTxidStatus: '',
           },
           familyInvites: [],
           completedMissions: [],
@@ -97,7 +95,7 @@ export class UserController {
         await aquiles.save();
 
         return aquiles;
-      } else if (userType === "player") {
+      } else if (userType === 'player') {
         const player = new Player({
           username,
           avatar,
@@ -105,9 +103,9 @@ export class UserController {
           discordId,
           vip: {
             status: false,
-            lastTxid: "",
-            lastQrCodeUrl: "",
-            lastTxidStatus: "",
+            lastTxid: '',
+            lastQrCodeUrl: '',
+            lastTxidStatus: '',
           },
           familyInvites: [],
         });

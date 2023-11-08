@@ -4,5 +4,4 @@ export function Roll(interaction: any) {
   interaction.reply({
     content: `Sua rolada deu ${rolada}`,
   });
-
 }

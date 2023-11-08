@@ -1,5 +1,5 @@
-import { client } from "..";
-import { aquiles_role_id, player_role_id } from "./rolesId";
+import { client } from '..';
+import { aquiles_role_id, player_role_id } from './rolesId';
 
 interface CheckUserRolesProps {
   roleId: string;

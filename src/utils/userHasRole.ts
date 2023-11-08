@@ -1,5 +1,5 @@
-import { client } from "..";
-import { aquiles_role_id, player_role_id } from "./rolesId";
+import { client } from '..';
+import { aquiles_role_id, player_role_id } from './rolesId';
 
 interface CheckUserRolesProps {
   roleId: string;
@@ -17,12 +17,12 @@ export function userHasRole({ userId, roleId }: CheckUserRolesProps) {
 }
 
 export function getUserType(userId: string) {
-  let userType = "";
+  let userType = '';
 
   if (userHasRole({ userId, roleId: aquiles_role_id })) {
-    userType = "aquiles";
+    userType = 'aquiles';
   } else if (userHasRole({ userId, roleId: player_role_id })) {
-    userType = "player";
+    userType = 'player';
   }
   return userType;
 }
