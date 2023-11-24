@@ -3,6 +3,7 @@ import cors from 'cors';
 import { sendPuzzleMsg } from '../utils/sendPuzzleMsg';
 import { sendServerMessage } from '../utils/sendServerStatus';
 import { UserController } from '../controllers/UsersController';
+import { ReportsController } from '../controllers/ReportsController';
 
 const routes = Router();
 
@@ -24,5 +25,7 @@ routes.get(
   '/checkAllowedUser/:username',
   new UserController().checkAllowedUser,
 );
+
+routes.get('/report/:id', new ReportsController().getRelatory);
 
 export default routes;
