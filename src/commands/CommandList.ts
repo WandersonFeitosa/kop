@@ -189,4 +189,56 @@ export const commands = [
       },
     ],
   },
+  {
+    name: 'owlbear',
+    description: 'owlbear',
+  },
+  {
+    name: 'iniciativa',
+    description: 'Controle de iniciativas',
+    options: [
+      {
+        name: 'inserir',
+        description: 'Insira um jogador na iniciativa',
+        type: 1,
+        options: [
+          {
+            name: 'nome',
+            description: 'Insira os jogadores',
+            type: 3,
+            required: true,
+          },
+          {
+            name: 'iniciativa',
+            description: 'Insira a iniciativa do jogador',
+            type: 4,
+            required: true,
+          },
+        ],
+      },
+      {
+        name: 'listar',
+        description: 'Lista os jogadores na iniciativa',
+        type: 1,
+      },
+      {
+        name: 'limpar',
+        description: 'Limpa a iniciativa',
+        type: 1,
+      },
+      {
+        name: 'remover',
+        description: 'Remove um jogador da iniciativa',
+        type: 1,
+        options: [
+          {
+            name: 'nome',
+            description: 'Insira o nome do jogador',
+            type: 3,
+            required: true,
+          },
+        ],
+      },
+    ],
+  },
 ];
