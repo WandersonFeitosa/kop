@@ -9,7 +9,15 @@ export const commands = [
   },
   {
     name: 'roll',
-    description: 'Rola um d20',
+    description: 'Da uma rolada',
+    options: [
+      {
+        name: 'afortunada',
+        description: 'Dá uma rolada afortunada',
+        type: 3,
+        required: true,
+      },
+    ],
   },
   {
     name: 'ana',
