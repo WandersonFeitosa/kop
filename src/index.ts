@@ -27,6 +27,7 @@ import { Logs } from './commands/Logs';
 import schedule from 'node-schedule';
 import { requestBackupStart } from './utils/requestBackupStart';
 import { InitiativeController } from './commands/Iniciativa';
+import { sendPrivateMessage } from './utils/sendPrivateMessage';
 
 const app = express();
 app.use(express.json());
@@ -62,12 +63,12 @@ async function startServer() {
   }
 }
 
-client.on(Events.MessageCreate, (message) => {
+client.on(Events.MessageCreate, async (message) => {
+  const andreId = '332525786273939458';
   try {
-    if (message.author.bot || message.author.id !== '332525786273939458')
-      return;
+    if (message.author.bot || message.author.id !== andreId) return;
     message.content = message.content.toLowerCase();
-    const forbiddenWords = ['pinto', 'penis', 'pika', 'sexo'];
+    const forbiddenWords = ['pinto', 'penis', 'pika', 'sexo', 'teste'];
 
     const foundForbiddenWord = forbiddenWords.find((word) =>
       message.content.includes(word),
@@ -78,28 +79,33 @@ client.on(Events.MessageCreate, (message) => {
         'https://media1.tenor.com/m/aGSAXma4EaAAAAAd/ednaldo-pereira-banido.gif';
 
       message.reply(`KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK\n ${gifUrl}`);
-      message.author
-        .createDM()
-        .then((dmChannel) => {
-          dmChannel
-            .send(gifUrl)
-            .then(() => {
-              dmChannel.send('https://discord.gg/hMgDhdFKDd').catch((err) => {
-                console.error('Failed to send URL:', err);
-              });
-            })
-            .catch((err) => {
-              console.error('Failed to send GIF:', err);
-            });
-        })
-        .catch((err) => {
-          console.error('Failed to create DM channel:', err);
-          message.reply(
-            'Could not send direct message. Please ensure your DM settings allow messages from server members.',
-          );
-        });
 
-      message.member?.kick();
+      await sendPrivateMessage({
+        user_id: message.author.id,
+        content: gifUrl,
+      });
+
+      await sendPrivateMessage({
+        user_id: message.author.id,
+        content: 'https://discord.gg/hMgDhdFKDd',
+      });
+    }
+
+    const vampetas = [
+      'https://cdn.discordapp.com/attachments/1052267501616107590/1232406291822018670/SPOILER_Ex-Jogador-Vampeta-pelado-na-G-Magazine-5.png?ex=6629574c&is=662805cc&hm=c3dc1c486e7dfe531029c6fe1c899d149015c0497c72e33672c33369e1ec2202&',
+      'https://cdn.discordapp.com/attachments/1052267501616107590/1232406353167913081/SPOILER_Vampeta-nu.png?ex=6629575b&is=662805db&hm=5cdc8524550bac493fd3671f2c0f6b08b97bed0b0a7d1b4eab12ee4cc9e1a5e8&',
+      'https://cdn.discordapp.com/attachments/1052267501616107590/1232406355340689408/SPOILER_MEMZL03_o.png?ex=6629575c&is=662805dc&hm=d0a73d00b1e0afd2810237d961441609217f0183c196011dd31bcf50359342cf&',
+    ];
+
+    const roll = Math.floor(Math.random() * 10) + 1;
+
+    if (message.author.id === andreId && roll === 1) {
+      const randomVampeta = Math.floor(Math.random() * vampetas.length);
+
+      await sendPrivateMessage({
+        user_id: message.author.id,
+        content: vampetas[randomVampeta],
+      });
     }
   } catch (err) {
     console.log(err);

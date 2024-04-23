@@ -1,3 +1,3 @@
 export function Ana(interaction: any) {
-  interaction.reply('Eu: 😎 | Vcs: 🤓');
+  interaction.reply('Eu: 😎 | Vcs: 🤓🤓');
 }
