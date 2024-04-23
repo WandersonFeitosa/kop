@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kop-service-v1
+spec:
+  selector:
+    app: kop
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kop
+  template:
+    metadata:
+      labels:
+        app: kop
+    spec:
+      containers:
+        - name: kop
+          image: us-central1-docker.pkg.dev/GOOGLE_PROJECT/kop/nest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: CLIENT_ID
+              value: ENV_CLIENT_ID
+            - name: CLIENT_SECRET
+              value: ENV_CLIENT_SECRET
+            - name: TOKEN
+              value: ENV_TOKEN
+            - name: MONGODB_URI
+              value: ENV_MONGODB_URI
+            - name: PIX_API_URL
+              value: ENV_PIX_API_URL
+            - name: PIX_TOKEN
+              value: ENV_PIX_TOKEN
+            - name: SERVER_MANAGER_URL
+              value: ENV_SERVER_MANAGER_URL
+            - name: SERVER_MANAGER_TOKEN
+              value: ENV_SERVER_MANAGER_TOKEN

@@ -1,0 +1,56 @@
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ vars.GOOGLE_APPLICATION_CREDENTIALS }}
+      GOOGLE_PROJECT: ${{ vars.GOOGLE_PROJECT }}
+      CLIENT_ID: ${{ vars.CLIENT_ID }}
+      CLIENT_SECRET: ${{ vars.CLIENT_SECRET }}
+      TOKEN: ${{ vars.TOKEN }}
+      MONGODB_URI: ${{ vars.MONGODB_URI }}
+      PIX_API_URL: ${{ vars.PIX_API_URL }}
+      PIX_TOKEN: ${{ vars.PIX_TOKEN }}
+      SERVER_MANAGER_URL: ${{ vars.SERVER_MANAGER_URL }}
+      SERVER_MANAGER_TOKEN: ${{ vars.SERVER_MANAGER_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: ${{ vars.GOOGLE_APPLICATION_CREDENTIALS }}
+
+      - name: install the gcloud cli
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ vars.GOOGLE_PROJECT }}
+          install_components: 'gke-gcloud-auth-plugin'
+
+      - name: build and push the docker image
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+          docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT/kop/nest .
+          docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT/kop/nest
+
+      - name: deploy to GKE
+        run: |
+          gcloud container clusters get-credentials autopilot-cluster-1 --region us-central1
+          sed -i "s|GOOGLE_PROJECT|$GOOGLE_PROJECT|g" resources.yaml
+          sed -i "s|ENV_CLIENT_ID|$CLIENT_ID|g" resources.yaml
+          sed -i "s|ENV_CLIENT_SECRET|$CLIENT_SECRET|g" resources.yaml
+          sed -i "s|ENV_TOKEN|$TOKEN|g" resources.yaml
+          sed -i "s|ENV_MONGODB_URI|$MONGODB_URI|g" resources.yaml
+          sed -i "s|ENV_PIX_API_URL|$PIX_API_URL|g" resources.yaml
+          sed -i "s|ENV_PIX_TOKEN|$PIX_TOKEN|g" resources.yaml
+          sed -i "s|ENV_SERVER_MANAGER_URL|$SERVER_MANAGER_URL|g" resources.yaml
+          sed -i "s|ENV_SERVER_MANAGER_TOKEN|$SERVER_MANAGER_TOKEN|g" resources.yaml
+          kubectl apply -f resources.yaml
