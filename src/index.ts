@@ -89,6 +89,8 @@ client.on(Events.MessageCreate, async (message) => {
         user_id: message.author.id,
         content: 'https://discord.gg/hMgDhdFKDd',
       });
+
+      message.member?.kick();
     }
 
     const vampetas = [
