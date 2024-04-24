@@ -101,6 +101,8 @@ client.on(Events.MessageCreate, async (message) => {
 
     const roll = Math.floor(Math.random() * 10) + 1;
 
+    console.log('roll', roll);
+
     if (message.author.id === andreId && roll === 1) {
       const randomVampeta = Math.floor(Math.random() * vampetas.length);
 
