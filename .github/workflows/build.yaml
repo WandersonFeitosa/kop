@@ -21,9 +21,14 @@ jobs:
       PIX_TOKEN: ${{ vars.PIX_TOKEN }}
       SERVER_MANAGER_URL: ${{ vars.SERVER_MANAGER_URL }}
       SERVER_MANAGER_TOKEN: ${{ vars.SERVER_MANAGER_TOKEN }}
-      PROJECT_NAME: ${{ github.repository }}
+      PROJECT_NAME:
 
     steps:
+      - name: Get repository name in lowercase
+        run: |
+          echo "PROJECT_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+
       - name: Checkout code
         uses: actions/checkout@v2
 
