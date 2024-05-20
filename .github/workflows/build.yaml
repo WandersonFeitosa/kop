@@ -9,6 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      PROJECT_NAME: 'kop'
       GOOGLE_APPLICATION_CREDENTIALS: ${{ vars.GOOGLE_APPLICATION_CREDENTIALS }}
       GOOGLE_PROJECT: ${{ vars.GOOGLE_PROJECT }}
       CLUSTER_NAME: ${{ vars.CLUSTER_NAME }}
@@ -21,14 +22,8 @@ jobs:
       PIX_TOKEN: ${{ vars.PIX_TOKEN }}
       SERVER_MANAGER_URL: ${{ vars.SERVER_MANAGER_URL }}
       SERVER_MANAGER_TOKEN: ${{ vars.SERVER_MANAGER_TOKEN }}
-      PROJECT_NAME:
 
     steps:
-      - name: Get repository name in lowercase
-        run: |
-          echo "PROJECT_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
-
-
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -46,8 +41,8 @@ jobs:
       - name: build and push the docker image
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev
-          docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT/$PROJECT_NAME/nest .
-          docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT/$PROJECT_NAME/nest
+          docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT/$PROJECT_NAME/bot .
+          docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT/$PROJECT_NAME/bot
 
       - name: deploy to GKE
         run: |
