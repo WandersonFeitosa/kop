@@ -11,6 +11,8 @@ jobs:
     env:
       GOOGLE_APPLICATION_CREDENTIALS: ${{ vars.GOOGLE_APPLICATION_CREDENTIALS }}
       GOOGLE_PROJECT: ${{ vars.GOOGLE_PROJECT }}
+      CLUSTER_NAME: ${{ vars.CLUSTER_NAME }}
+      CLUSTER_REGION: ${{ vars.CLUSTER_REGION }}
       CLIENT_ID: ${{ vars.CLIENT_ID }}
       CLIENT_SECRET: ${{ vars.CLIENT_SECRET }}
       TOKEN: ${{ vars.TOKEN }}
@@ -43,7 +45,7 @@ jobs:
 
       - name: deploy to GKE
         run: |
-          gcloud container clusters get-credentials autopilot-cluster-1 --region us-central1
+          gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION
           sed -i "s|GOOGLE_PROJECT|$GOOGLE_PROJECT|g" resources.yaml
           sed -i "s|ENV_CLIENT_ID|$CLIENT_ID|g" resources.yaml
           sed -i "s|ENV_CLIENT_SECRET|$CLIENT_SECRET|g" resources.yaml
@@ -53,4 +55,4 @@ jobs:
           sed -i "s|ENV_PIX_TOKEN|$PIX_TOKEN|g" resources.yaml
           sed -i "s|ENV_SERVER_MANAGER_URL|$SERVER_MANAGER_URL|g" resources.yaml
           sed -i "s|ENV_SERVER_MANAGER_TOKEN|$SERVER_MANAGER_TOKEN|g" resources.yaml
-          kubectl apply -f resources.yaml
+          kubectl apply --record -f resources.yaml
