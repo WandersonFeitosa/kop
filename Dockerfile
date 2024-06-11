@@ -19,5 +19,8 @@ RUN npm run build
 # Expose the port that the application will run on
 EXPOSE 3000
 
+#copy the folder /src/images to /app
+COPY src/images ./dist
+
 # Define the command to run your application
 CMD ["npm", "run", "start"]
