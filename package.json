@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node ./src/index.ts",
-    "build": "tsc",
+    "build": "tsc && npm run copy:images",
+    "copy:images": "copyfiles -f ./src/images/* ./dist/images",
     "start": "node ./dist/index.js",
     "format": "prettier --write \"src/**/*.ts\""
   },
@@ -24,7 +25,8 @@
     "express": "^4.18.2",
     "mongoose": "^7.4.0",
     "multer": "^1.4.5-lts.1",
-    "node-schedule": "^2.1.1"
+    "node-schedule": "^2.1.1",
+    "copyfiles": "^2.4.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
@@ -32,7 +34,7 @@
     "@types/multer": "^1.4.7",
     "@types/node-schedule": "^2.1.1",
     "nodemon": "^3.0.1",
-    "ts-node": "^10.9.1",
-    "prettier": "^2.8.3"
+    "prettier": "^2.8.3",
+    "ts-node": "^10.9.1"
   }
 }
