@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node ./src/index.ts",
-    "build": "tsc && npm run copy:images",
+    "build": "tsc",
     "copy:images": "copyfiles -f ./src/images/* ./dist/images",
     "start": "node ./dist/index.js",
     "format": "prettier --write \"src/**/*.ts\""
