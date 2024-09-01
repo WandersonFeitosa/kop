@@ -194,6 +194,18 @@ export const commands = [
     description: 'owlbear',
   },
   {
+    name: 'campo',
+    description: 'Campo anômalo',
+  },
+  {
+    name: 'listar-campo',
+    description: 'Lista todos os poderes do campo',
+  },
+  {
+    name: 'limpar-campo',
+    description: 'Limpa todos os poderes do campo',
+  },
+  {
     name: 'iniciativa',
     description: 'Controle de iniciativas',
     options: [

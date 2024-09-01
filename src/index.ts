@@ -1,12 +1,14 @@
-import { Events, Partials, REST, Routes } from 'discord.js';
-import 'dotenv/config';
-import mongoose from 'mongoose';
-
 import {
   Client,
   GatewayIntentBits,
-  Partials as DiscordParts,
+  Events,
+  Partials,
+  REST,
+  Routes,
 } from 'discord.js';
+import 'dotenv/config';
+import mongoose from 'mongoose';
+
 import { Ana } from './commands/Ana';
 import { Roll } from './commands/Roll';
 import { Plugins } from './commands/Plugins';
@@ -28,6 +30,12 @@ import schedule from 'node-schedule';
 import { requestBackupStart } from './utils/requestBackupStart';
 import { InitiativeController } from './commands/Iniciativa';
 import { sendPrivateMessage } from './utils/sendPrivateMessage';
+import {
+  Campo,
+  ClearPowers,
+  ListRemainingPowers,
+  RegisterChoice,
+} from './commands/Campo';
 
 const app = express();
 app.use(express.json());
@@ -36,11 +44,13 @@ app.use(routes);
 export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildVoiceStates,
   ],
-  partials: [DiscordParts.Channel],
+  partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
 const TOKEN = process.env.TOKEN as string;
@@ -156,6 +166,15 @@ client.on('interactionCreate', async (interaction: any) => {
       return new Logs().getLogsNames(interaction);
     }
   }
+  if (interaction.commandName == 'campo') {
+    return await Campo(interaction);
+  }
+  if (interaction.commandName == 'listar-campo') {
+    return await ListRemainingPowers(interaction);
+  }
+  if (interaction.commandName == 'limpar-campo') {
+    return await ClearPowers(interaction);
+  }
   if (interaction.commandName === 'iniciativa') {
     if (interaction.options.getSubcommand() === 'inserir') {
       return new InitiativeController().addPlayer(interaction);
@@ -178,6 +197,9 @@ client.on('interactionCreate', async (interaction: any) => {
   return await interaction.reply('Calma aí paizão, comando não encontrado');
 });
 
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+  await RegisterChoice(reaction, user);
+});
 const port = process.env.PORT || 3001;
 
 app.listen(port, () => {
