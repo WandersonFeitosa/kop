@@ -126,96 +126,108 @@ export async function RegisterChoice(
   reaction: MessageReaction | PartialMessageReaction,
   user: User | PartialUser,
 ) {
-  if (user.bot || !allowedIds.includes(user.id)) return;
+  try {
+    if (user.bot || !allowedIds.includes(user.id)) return;
 
-  if (reaction.partial) {
-    try {
-      await reaction.fetch();
-    } catch (error) {
-      console.error('Something went wrong when fetching the message:', error);
-      return;
+    if (reaction.partial) {
+      try {
+        await reaction.fetch();
+      } catch (error) {
+        console.error('Something went wrong when fetching the message:', error);
+        return;
+      }
     }
+
+    const { message } = reaction;
+    const reactionEmoji = reaction.emoji.name;
+
+    if (reactionEmoji !== '1️⃣' && reactionEmoji !== '2️⃣') return;
+
+    const messageContent = message.content;
+
+    if (!messageContent) return;
+
+    const regexArray = messageContent.match(/`([^`]*)`/);
+
+    const rounds = regexArray ? parseInt(regexArray[1]) : 0;
+
+    const powers = await campo.find();
+
+    const power1 = powers.find((power) => power.pendingNumber === 1);
+    const power2 = powers.find((power) => power.pendingNumber === 2);
+
+    if (!power1 || !power2) return;
+
+    const chosenPower = reactionEmoji === '1️⃣' ? power1 : power2;
+
+    await campo.updateOne(
+      { id: chosenPower.id },
+      {
+        remainingRounds: rounds,
+        pendingNumber: 0,
+      },
+    );
+
+    await message.reactions.removeAll();
+
+    const powersWithRemainingRounds = await campo.find({
+      remainingRounds: { $gt: 0 },
+    });
+
+    if (!powersWithRemainingRounds) return;
+
+    const description = powersWithRemainingRounds
+      .map((power) => `\`${power.remainingRounds}\` | ${power.description}  `)
+      .join('\n');
+
+    await message.edit(description);
+  } catch (error) {
+    console.log(error);
   }
-
-  const { message } = reaction;
-  const reactionEmoji = reaction.emoji.name;
-
-  if (reactionEmoji !== '1️⃣' && reactionEmoji !== '2️⃣') return;
-
-  const messageContent = message.content;
-
-  if (!messageContent) return;
-
-  const regexArray = messageContent.match(/`([^`]*)`/);
-
-  const rounds = regexArray ? parseInt(regexArray[1]) : 0;
-
-  const powers = await campo.find();
-
-  const power1 = powers.find((power) => power.pendingNumber === 1);
-  const power2 = powers.find((power) => power.pendingNumber === 2);
-
-  if (!power1 || !power2) return;
-
-  const chosenPower = reactionEmoji === '1️⃣' ? power1 : power2;
-
-  await campo.updateOne(
-    { id: chosenPower.id },
-    {
-      remainingRounds: rounds,
-      pendingNumber: 0,
-    },
-  );
-
-  await message.reactions.removeAll();
-
-  const powersWithRemainingRounds = await campo.find({
-    remainingRounds: { $gt: 0 },
-  });
-
-  if (!powersWithRemainingRounds) return;
-
-  const description = powersWithRemainingRounds
-    .map((power) => `\`${power.remainingRounds}\` | ${power.description}  `)
-    .join('\n');
-
-  await message.edit(description);
 }
 
 export async function ListRemainingPowers(interaction: CommandInteraction) {
-  if (!interaction.isCommand()) return;
-  await interaction.deferReply();
+  try {
+    if (!interaction.isCommand()) return;
+    await interaction.deferReply();
 
-  const powers = await campo.find();
+    const powers = await campo.find();
 
-  const powersWithRemainingRounds = powers.filter(
-    (power) => power.remainingRounds && power.remainingRounds > 0,
-  );
+    const powersWithRemainingRounds = powers.filter(
+      (power) => power.remainingRounds && power.remainingRounds > 0,
+    );
 
-  if (!powersWithRemainingRounds.length)
-    return interaction.editReply('Nenhum poder ativo');
+    if (!powersWithRemainingRounds.length)
+      return interaction.editReply('Nenhum poder ativo');
 
-  const description = powersWithRemainingRounds
-    .map((power) => `\`${power.remainingRounds}\` | ${power.description}  `)
-    .join('\n');
+    const description = powersWithRemainingRounds
+      .map((power) => `\`${power.remainingRounds}\` | ${power.description}  `)
+      .join('\n');
 
-  await interaction.editReply(description);
+    await interaction.editReply(description);
+  } catch (error) {
+    return interaction.reply('Erro ao executar o comando');
+  }
 }
 
 export async function ClearPowers(interaction: CommandInteraction) {
-  if (!interaction.isCommand()) return;
-  await interaction.deferReply();
+  try {
+    if (!interaction.isCommand()) return;
+    await interaction.deferReply();
 
-  const powers = await campo.find();
+    const powers = await campo.find();
 
-  const powersWithRemainingRounds = powers.filter(
-    (power) => power.remainingRounds && power.remainingRounds > 0,
-  );
+    const powersWithRemainingRounds = powers.filter(
+      (power) => power.remainingRounds && power.remainingRounds > 0,
+    );
 
-  if (!powersWithRemainingRounds.length)
-    return interaction.editReply('Nenhum poder ativo');
+    if (!powersWithRemainingRounds.length)
+      return interaction.editReply('Nenhum poder ativo');
 
-  await campo.updateMany({ remainingRounds: 0 });
+    await campo.updateMany({ remainingRounds: 0 });
 
-  await interaction.editReply('Poderes limpos');
+    await interaction.editReply('Poderes limpos');
+  } catch (error) {
+    return interaction.reply('Erro ao executar o comando');
+  }
 }
