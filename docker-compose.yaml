@@ -1,5 +1,5 @@
 services:
-  bob:
+  kop:
     build:
       context: .
       dockerfile: Dockerfile
