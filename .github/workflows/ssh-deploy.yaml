@@ -46,7 +46,7 @@ jobs:
               SERVER_MANAGER_TOKEN=${{ vars.SERVER_MANAGER_TOKEN }}
               PORT=${{ vars.PORT }}
               SCRAPE_KEY=${{ vars.SCRAPE_KEY }}
-              EXCLUDED_CHANNELS=${{ vars.EXCLUDED_CHANNELS }}
+              INCLUDED_CHANNELS=${{ vars.INCLUDED_CHANNELS }}
           EOF
 
       - name: Start Docker Compose

@@ -18,15 +18,25 @@ const scrapperSchema = new mongoose.Schema({
     date: Date
 });
 
-const ScrapperData = mongoose.model('scrapper', scrapperSchema);
+const ScrapperData = mongoose.model('topics', scrapperSchema);
 
 export class Scrapper {
     private totalMessages = 0;
     private processedMessages = 0;
     private startTime: Date | null = null;
     private userCache: Map<string, string> = new Map();
-    private excludedChannels = process.env.EXCLUDED_CHANNELS?.split(',') || [];
+    private includedChannels = process.env.INCLUDED_CHANNELS?.split(',') || [];
     private scrapeLock = false;
+    private userMap = new Map([
+        ['552859738476380170', 'Buba'],
+        ['332525786273939458', 'André'],
+        ['500908554752884737', 'Gótica'],
+        ['653577745086939147', 'Ana'],
+        ['709910500393222235', 'Kol'],
+        ['529116315265400832', 'Shu'],
+        ['572951467959517195', 'Lee'],
+        ['339177530772815875', 'Vandaum']
+    ]);
 
     startScrapper = async (req: Request, res: Response) => {
         const guildId = req.params.guildId;
@@ -65,6 +75,8 @@ export class Scrapper {
             console.log(`[Scrapper] Completed! Processed ${this.totalMessages} messages in ${duration}`);
         } catch (error) {
             console.error('[Scrapper] Error:', error);
+        } finally {
+            this.scrapeLock = false;
         }
     }
 
@@ -77,9 +89,9 @@ export class Scrapper {
 
         // Get all channels first
         for (const channel of channels.values()) {
-            if (!channel || this.excludedChannels.includes(channel.id)) continue;
+            if (!channel) continue;
 
-            // Handle forum channels
+            // Handle forum channels (always include all forum channels)
             if (channel.type === ChannelType.GuildForum) {
                 // Get active threads
                 const activeThreads = await channel.threads.fetchActive();
@@ -104,8 +116,8 @@ export class Scrapper {
                 continue;
             }
 
-            // Handle text channels
-            if (channel.isTextBased()) {
+            // Handle text channels (only if included)
+            if (channel.isTextBased() && this.includedChannels.includes(channel.id)) {
                 result.push({
                     id: channel.id,
                     name: channel.name,
@@ -183,10 +195,17 @@ export class Scrapper {
     }
 
     private async getUsernameFromMention(userId: string): Promise<string> {
+        // Check predefined map first
+        if (this.userMap.has(userId)) {
+            return this.userMap.get(userId)!;
+        }
+        
+        // Check cache next
         if (this.userCache.has(userId)) {
             return this.userCache.get(userId)!;
         }
 
+        // Fallback to API call
         try {
             const user = await client.users.fetch(userId);
             const username = user.username;
@@ -231,7 +250,8 @@ export class Scrapper {
                 messages.map(async message => ({
                     discordMessageId: message.id,
                     content: await this.replaceUserMentions(message.content),
-                    author: message.author.username,
+                    // Use predefined map for author if available
+                    author: this.userMap.get(message.author.id) || message.author.username,
                     date: message.createdAt,
                 }))
             );
