@@ -25,11 +25,7 @@ export class Scrapper {
     private processedMessages = 0;
     private startTime: Date | null = null;
     private userCache: Map<string, string> = new Map();
-    private excludedChannels = [
-        "channel_id_1",
-        "channel_id_2",
-        // Add more channel IDs to exclude
-    ];
+    private excludedChannels = process.env.EXCLUDED_CHANNELS?.split(',') || [];
     private scrapeLock = false;
 
     startScrapper = async (req: Request, res: Response) => {
