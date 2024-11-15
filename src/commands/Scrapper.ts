@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { client } from '..';
-import { TextChannel, ChannelType } from 'discord.js';
+import { TextChannel, ChannelType, Channel } from 'discord.js';
 
 interface MessageData {
     content: string;
     author: string;
     date: Date;
     discordMessageId: string;
+    channelName: string;
 }
 
 const scrapperSchema = new mongoose.Schema({
@@ -15,7 +16,8 @@ const scrapperSchema = new mongoose.Schema({
     content: String,
     author: String,
     discordMessageId: String,
-    date: Date
+    date: Date,
+    channelName: String
 });
 
 const ScrapperData = mongoose.model('topics', scrapperSchema);
@@ -63,7 +65,7 @@ export class Scrapper {
         console.log(`[Scrapper] Starting scrape for guild ${guildId}`);
         res.status(200).json({ message: "Scrapper started" });
         try {
-            const channels = await this.getTextChannels(guildId);
+            const channels = (await this.getTextChannels(guildId)).sort((a, b) => a.type === 'topic' ? -1 : 1);
 
             for (const channel of channels) {
                 console.log(`[Scrapper] Starting channel: ${channel.name} (${channel.id})`);
@@ -117,8 +119,8 @@ export class Scrapper {
             }
 
             // Handle text channels (only if included)
-            if (channel.isTextBased() && this.includedChannels.includes(channel.id)) {
-                result.push({
+            if (channel.isTextBased()) {
+                if (this.includedChannels.includes(channel.id)) result.push({
                     id: channel.id,
                     name: channel.name,
                     type: 'text'
@@ -199,7 +201,7 @@ export class Scrapper {
         if (this.userMap.has(userId)) {
             return this.userMap.get(userId)!;
         }
-        
+
         // Check cache next
         if (this.userCache.has(userId)) {
             return this.userCache.get(userId)!;
@@ -237,7 +239,7 @@ export class Scrapper {
         messages: MessageData[],
         olderMessage: MessageData
     }> {
-        const channel = client.channels.cache.get(channelId);
+        const channel = client.channels.cache.get(channelId) as TextChannel | null;
         if (!channel?.isTextBased()) throw new Error('Channel is not text based');
 
         try {
@@ -250,9 +252,9 @@ export class Scrapper {
                 messages.map(async message => ({
                     discordMessageId: message.id,
                     content: await this.replaceUserMentions(message.content),
-                    // Use predefined map for author if available
                     author: this.userMap.get(message.author.id) || message.author.username,
                     date: message.createdAt,
+                    channelName: channel.name
                 }))
             );
 
@@ -270,7 +272,7 @@ export class Scrapper {
         try {
             const existingMessage = await ScrapperData.findOne({
                 discordMessageId: message.discordMessageId
-            }).select('discordMessageId'); // Only fetch the ID field for performance
+            }).select('discordMessageId');
 
             if (!existingMessage) {
                 await ScrapperData.create({
@@ -279,6 +281,7 @@ export class Scrapper {
                     author: message.author,
                     discordMessageId: message.discordMessageId,
                     date: message.date,
+                    channelName: message.channelName
                 });
             }
         } catch (error) {
