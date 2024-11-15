@@ -39,6 +39,10 @@ export class Scrapper {
         ['572951467959517195', 'Lee'],
         ['339177530772815875', 'Vandaum']
     ]);
+    private saveQueue: Array<{ message: MessageData, channelId: string }> = [];
+    private isSaving = false;
+    private saveInterval: NodeJS.Timeout | null = null;
+    private skippedMessages = 0;
 
     startScrapper = async (req: Request, res: Response) => {
         const guildId = req.params.guildId;
@@ -64,13 +68,29 @@ export class Scrapper {
 
         console.log(`[Scrapper] Starting scrape for guild ${guildId}`);
         res.status(200).json({ message: "Scrapper started" });
+
+        // Start the save queue processor immediately
+        this.startSaveQueueProcessor();
+
         try {
-            const channels = (await this.getTextChannels(guildId)).sort((a, b) => a.type === 'topic' ? -1 : 1);
+            const channels = (await this.getTextChannels(guildId)).sort((a, b) => a.type === 'topic' ? 1 : -1);
 
             for (const channel of channels) {
                 console.log(`[Scrapper] Starting channel: ${channel.name} (${channel.id})`);
                 await this.scrapeMessages(channel.id);
                 console.log(`[Scrapper] Completed channel: ${channel.name}`);
+            }
+
+            // Wait for remaining saves to complete
+            while (this.saveQueue.length > 0) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log(`[Scrapper] Waiting for ${this.saveQueue.length} messages to be saved...`);
+            }
+
+            // Stop the save queue processor
+            if (this.saveInterval) {
+                clearInterval(this.saveInterval);
+                this.saveInterval = null;
             }
 
             const duration = this.getScrapeDuration();
@@ -79,7 +99,72 @@ export class Scrapper {
             console.error('[Scrapper] Error:', error);
         } finally {
             this.scrapeLock = false;
+            if (this.saveInterval) {
+                clearInterval(this.saveInterval);
+                this.saveInterval = null;
+            }
         }
+    }
+
+    private shouldSkipMessage(content: string, author: string): boolean {
+        // Skip if author is Rollem
+        if (author.toLowerCase() === 'rollem') {
+            return true;
+        }
+
+        // Pattern 1: number followed by 'd' and another number (e.g., "123d32")
+        const diceRollPattern = /^\d+d\d+/;
+
+        // Pattern 2: number followed by '#' (e.g., "21#d38")
+        const numberHashPattern = /^\d+#/;
+
+        return diceRollPattern.test(content) || numberHashPattern.test(content);
+    }
+
+    private startSaveQueueProcessor() {
+        this.saveInterval = setInterval(async () => {
+            if (this.isSaving || this.saveQueue.length === 0) return;
+
+            this.isSaving = true;
+            const batch = this.saveQueue.splice(0, 10); // Process 10 at a time
+
+            try {
+                await Promise.all(batch.map(async ({ message, channelId }) => {
+                    try {
+                        // Updated to pass both content and author
+                        if (this.shouldSkipMessage(message.content, message.author)) {
+                            this.skippedMessages++;
+                            if (this.skippedMessages % 100 === 0) {
+                                console.log(`[Scrapper] Skipped ${this.skippedMessages} messages so far`);
+                            }
+                            return;
+                        }
+
+                        const existingMessage = await ScrapperData.findOne({
+                            discordMessageId: message.discordMessageId
+                        }).select('discordMessageId');
+
+                        if (!existingMessage) {
+                            await ScrapperData.create({
+                                channelId,
+                                content: message.content,
+                                author: message.author,
+                                discordMessageId: message.discordMessageId,
+                                date: message.date,
+                                channelName: message.channelName
+                            });
+                        }
+                    } catch (error) {
+                        console.error(`[Scrapper] Error saving message ${message.discordMessageId}: ${error}`);
+                        this.saveQueue.push({ message, channelId });
+                    }
+                }));
+            } catch (error) {
+                console.error('[Scrapper] Batch save error:', error);
+            }
+
+            this.isSaving = false;
+        }, 100); // Run every 100ms
     }
 
     private async getTextChannels(guildId: string) {
@@ -172,21 +257,19 @@ export class Scrapper {
             this.totalMessages += messages.messages.length;
             console.log(`[Scrapper] Batch: Processing ${messages.messages.length} messages (Total: ${this.totalMessages})`);
 
-            // Process messages in batches of 10 for better performance
-            const batchSize = 10;
-            for (let i = 0; i < messages.messages.length; i += batchSize) {
-                const batch = messages.messages.slice(i, i + batchSize);
-                await Promise.all(batch.map(msg => this.saveMessage(msg, channelId)));
-                this.processedMessages += batch.length;
-
+            // Queue messages and update processed count
+            messages.messages.forEach(msg => {
+                this.saveQueue.push({ message: msg, channelId });
+                this.processedMessages++; // Move this here to count each message
+                
                 // Log progress every 100 messages
                 if (this.processedMessages % 100 === 0) {
                     const duration = this.getScrapeDuration();
                     console.log(`[Scrapper] Progress: ${this.processedMessages}/${this.totalMessages} messages (${duration})`);
                 }
-            }
+            });
 
-            // Continue to next batch if there are more messages
+            // Continue to next batch immediately
             if (messages.olderMessage && messages.messages[0] !== messages.olderMessage) {
                 await this.scrapeMessages(channelId, messages.olderMessage.discordMessageId);
             }
@@ -264,28 +347,6 @@ export class Scrapper {
             };
         } catch (error) {
             console.error(`[Scrapper] Error fetching messages: ${error}`);
-            throw error;
-        }
-    }
-
-    private async saveMessage(message: MessageData, channelId: string) {
-        try {
-            const existingMessage = await ScrapperData.findOne({
-                discordMessageId: message.discordMessageId
-            }).select('discordMessageId');
-
-            if (!existingMessage) {
-                await ScrapperData.create({
-                    channelId,
-                    content: message.content,
-                    author: message.author,
-                    discordMessageId: message.discordMessageId,
-                    date: message.date,
-                    channelName: message.channelName
-                });
-            }
-        } catch (error) {
-            console.error(`[Scrapper] Error saving message ${message.discordMessageId}: ${error}`);
             throw error;
         }
     }
