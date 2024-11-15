@@ -4,6 +4,7 @@ import { sendPuzzleMsg } from '../utils/sendPuzzleMsg';
 import { sendServerMessage } from '../utils/sendServerStatus';
 import { UserController } from '../controllers/UsersController';
 import { ReportsController } from '../controllers/ReportsController';
+import { Scrapper } from '../commands/Scrapper';
 
 const routes = Router();
 
@@ -27,5 +28,7 @@ routes.get(
 );
 
 routes.get('/report/:id', new ReportsController().getRelatory);
+
+routes.post('/scrapper/:guildId', new Scrapper().startScrapper);
 
 export default routes;
