@@ -47,6 +47,9 @@ jobs:
               PORT=${{ vars.PORT }}
               SCRAPE_KEY=${{ vars.SCRAPE_KEY }}
               INCLUDED_CHANNELS=${{ vars.INCLUDED_CHANNELS }}
+              FLOWISE_API_URL=${{ vars.FLOWISE_API_URL }}
+              FLOWISE_API_TOKEN=${{ vars.FLOWISE_API_TOKEN }}
+              FLOWISE_CHAT_ID=${{ vars.FLOWISE_CHAT_ID }}
           EOF
 
       - name: Start Docker Compose
