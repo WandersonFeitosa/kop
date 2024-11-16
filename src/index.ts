@@ -36,6 +36,7 @@ import {
   ListRemainingPowers,
   RegisterChoice,
 } from './commands/Campo';
+import { Flowise } from './commands/Flowise';
 
 const app = express();
 app.use(express.json());
@@ -89,6 +90,12 @@ client.on('ready', () => {
     activities: [{ name: '/comandos', type: undefined }],
     status: 'online',
   });
+});
+
+client.on(Events.MessageCreate, async (message) => {
+  if (client.user && message.mentions.has(client.user.id) && !message.author.bot) {
+    await new Flowise().messageReply(message);
+  }
 });
 
 client.on('interactionCreate', async (interaction: any) => {
