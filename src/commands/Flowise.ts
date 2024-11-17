@@ -33,8 +33,8 @@ export class Flowise {
             console.log("Sending message to Flowise: ", message, chatId);
             const flowiseUrl = process.env.FLOWISE_API_URL;
             const flowiseToken = process.env.FLOWISE_API_TOKEN;
-            const flowiseChatId = process.env.FLOWISE_CHAT_ID;
-            const response = await fetch(`${flowiseUrl}/api/v1/prediction/${flowiseChatId}`, {
+            const flowiseChatflowId = process.env.FLOWISE_CHATFLOW_ID;
+            const response = await fetch(`${flowiseUrl}/api/v1/prediction/${flowiseChatflowId}`, {
                 method: 'POST',
                 body: JSON.stringify({ question: message, chatId: chatId }),
                 headers: {

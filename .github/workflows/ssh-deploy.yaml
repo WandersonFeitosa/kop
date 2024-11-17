@@ -49,7 +49,7 @@ jobs:
               INCLUDED_CHANNELS=${{ vars.INCLUDED_CHANNELS }}
               FLOWISE_API_URL=${{ vars.FLOWISE_API_URL }}
               FLOWISE_API_TOKEN=${{ vars.FLOWISE_API_TOKEN }}
-              FLOWISE_CHAT_ID=${{ vars.FLOWISE_CHAT_ID }}
+              FLOWISE_CHATFLOW_ID=${{ vars.FLOWISE_CHATFLOW_ID }}
           EOF
 
       - name: Start Docker Compose
